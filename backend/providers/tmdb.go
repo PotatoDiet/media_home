@@ -3,6 +3,9 @@ package providers
 import (
   gotmdb "github.com/cyruzin/golang-tmdb"
   "potatodiet/media_home_backend/items"
+  "net/http"
+  "os"
+  "io"
 )
 
 type tmdb struct {
@@ -26,7 +29,23 @@ func (p tmdb) Find(video *items.Video) error {
     return err
   }
   video.Title = res.Results[0].Title
+  video.Poster = "assets/posters" + res.Results[0].PosterPath
   video.Year = year
 
+  DownloadFile(
+    "https://image.tmdb.org/t/p/original" + res.Results[0].PosterPath,
+    video.Poster,
+  )
+
   return nil
+}
+
+func DownloadFile(url string, path string) {
+  out, _ := os.Create(path)
+  defer out.Close()
+
+  res, _ := http.Get(url)
+  defer res.Body.Close()
+
+  io.Copy(out, res.Body)
 }

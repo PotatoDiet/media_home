@@ -25,6 +25,7 @@ func main() {
   db.AutoMigrate(&items.Video{})
 
   e := echo.New()
+  e.Static("/assets", "assets")
 
   e.Use(middleware.CORSWithConfig(middleware.CORSConfig{
     AllowOrigins: []string{"http://localhost:3000"},

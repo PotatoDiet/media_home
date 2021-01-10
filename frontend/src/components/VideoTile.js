@@ -5,8 +5,10 @@ import './VideoTile.css';
 class VideoTile extends React.Component {
   render() {
     return (
-      <Link class="video-tile" to={`/video/${this.props.id}`}>
-        {this.props.title} ({this.props.year})
+      <Link
+        class="video-tile"
+        to={`/video/${this.props.id}`}
+        style={{backgroundImage: `url(http://localhost:1234/${this.props.poster})`}}>
       </Link>
     )
   }

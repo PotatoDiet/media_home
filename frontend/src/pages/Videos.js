@@ -24,6 +24,7 @@ class Videos extends React.Component {
               id = {v.id}
               title = {v.title}
               year = {v.year}
+              poster = {v.poster}
             />
           )
         })}

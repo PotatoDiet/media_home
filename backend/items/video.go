@@ -8,4 +8,5 @@ type Video struct {
   Language string `json:"language"`
   Country string `json:"country"`
   Location string `json:"location"`
+  Poster string `json:"poster"`
 }
