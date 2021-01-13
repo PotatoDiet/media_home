@@ -23,7 +23,6 @@ func (c Controller) Videos(ctx echo.Context) error {
 
 func (c Controller) VideosUpdate(ctx echo.Context) error {
   providers_list := []providers.Provider{
-    //providers.OmdbInit("640e7773"),
     providers.TmdbInit("5ef572428a688eddbb5e68049f7fedd8"),
   }
 
