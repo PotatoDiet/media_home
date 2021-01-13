@@ -27,8 +27,7 @@ func (c Controller) VideosUpdate(ctx echo.Context) error {
     providers.TmdbInit("5ef572428a688eddbb5e68049f7fedd8"),
   }
 
-  videos, _ := filepath.Glob("videos/*.mkv")
-  for _, path := range videos {
+  for _, path := range find_videos() {
     var v items.Video
     c.DB.FirstOrCreate(&v, items.Video{Location: path})
 
@@ -52,4 +51,24 @@ func (c Controller) VideosClean(ctx echo.Context) error {
   }
 
   return ctx.NoContent(http.StatusOK)
+}
+
+func find_videos() []string {
+  var videos []string
+
+  filepath.Walk("videos", func(path string, _ os.FileInfo, _ error) error {
+    extensions := map[string]bool {
+      ".mkv": true,
+      ".mp4": true,
+    }
+
+    ext := filepath.Ext(path)
+    if extensions[ext] {
+      videos = append(videos, path)
+    }
+
+    return nil
+  })
+
+  return videos
 }
