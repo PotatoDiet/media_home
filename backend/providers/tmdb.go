@@ -4,6 +4,9 @@ import (
   gotmdb "github.com/cyruzin/golang-tmdb"
   "potatodiet/media_home_backend/items"
   "net/http"
+  "path/filepath"
+  "regexp"
+  "strings"
   "os"
   "io"
 )
@@ -37,6 +40,17 @@ func (p tmdb) Find(video *items.Video) error {
     video.Poster,
   )
 
+  details, err := p.client.GetMovieDetails(int(res.Results[0].ID), nil)
+  if err != nil {
+    return err
+  }
+  video.CommunityRating = details.VoteAverage
+  video.Genres = ""
+  for _, genre := range details.Genres {
+    video.Genres += genre.Name + ", "
+  }
+  video.Genres = strings.Trim(video.Genres, ", ")
+
   return nil
 }
 
@@ -48,4 +62,12 @@ func DownloadFile(url string, path string) {
   defer res.Body.Close()
 
   io.Copy(out, res.Body)
+}
+
+// extracts title and year
+// path should be in the form /some/dir/The Title (Year).mkv
+func extract_details(path string) (string, string) {
+  re := regexp.MustCompile(`(.+) \((\d+)\).+`)
+  match := re.FindStringSubmatch(filepath.Base(path))
+  return match[1], match[2]
 }

@@ -6,6 +6,7 @@ class Video extends React.Component {
     this.state = {
       id: "",
       title: "",
+      genres: "",
       year: ""
     }
   }
@@ -17,6 +18,8 @@ class Video extends React.Component {
     this.setState({
       id: id,
       title: data.title,
+      genres: data.genres,
+      communityRating: data.communityRating,
       year: data.year
     });
   }
@@ -30,6 +33,8 @@ class Video extends React.Component {
       <div>
         <div>Title: {this.state.title}</div>
         <div>Year: {this.state.year}</div>
+        <div>Genres: {this.state.genres}</div>
+        <div>Rating: {this.state.communityRating}</div>
 
         <video width="1024" height="728" controls>
           <source src={`http://localhost:1234/stream/${this.state.id}`} type="video/mp4" />
