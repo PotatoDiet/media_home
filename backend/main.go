@@ -37,6 +37,7 @@ func main() {
   }
 
   e.GET("/video/:id", c.Video)
+  e.GET("/video/:id/update_watch_timestamp", c.VideoUpdateWatchTimestamp)
   e.GET("/videos", c.Videos)
   e.GET("/videos/update", c.VideosUpdate)
   e.GET("/videos/clean", c.VideosClean)

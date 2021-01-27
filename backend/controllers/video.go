@@ -7,12 +7,27 @@ import (
   "path/filepath"
   "net/http"
   "os"
+  "strconv"
 )
 
 func (c Controller) Video(ctx echo.Context) error {
   var video items.Video
   c.DB.First(&video, ctx.Param("id"))
   return ctx.JSON(http.StatusOK, video)
+}
+
+func (c Controller) VideoUpdateWatchTimestamp(ctx echo.Context) error {
+  var video items.Video
+  c.DB.First(&video, ctx.Param("id"))
+
+  timestamp, err := strconv.ParseUint(ctx.QueryParam("timestamp"), 10, 64)
+  if err != nil {
+    return err
+  }
+  video.CurrentWatchTimestamp = timestamp
+  c.DB.Save(&video)
+
+  return ctx.NoContent(http.StatusOK)
 }
 
 func (c Controller) Videos(ctx echo.Context) error {

@@ -8,4 +8,5 @@ type Video struct {
   Genres string `json:"genres"`
   CommunityRating float32 `json:"communityRating"`
   Poster string `json:"poster"`
+  CurrentWatchTimestamp uint64 `json:"currentWatchTimestamp"`
 }

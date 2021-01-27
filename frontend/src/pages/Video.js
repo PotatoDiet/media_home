@@ -7,8 +7,11 @@ class Video extends React.Component {
       id: "",
       title: "",
       genres: "",
-      year: ""
+      year: "",
+      currentWatchTimestamp: 0
     }
+
+    this.startWatching = this.startWatching.bind(this);
   }
 
   async componentDidMount() {
@@ -36,12 +39,22 @@ class Video extends React.Component {
         <div>Genres: {this.state.genres}</div>
         <div>Rating: {this.state.communityRating}</div>
 
-        <video width="1024" height="728" controls>
+        <video width="1024"
+               height="728"
+               controls
+               onLoadStart={this.startWatching}>
           <source src={`http://localhost:1234/stream/${this.state.id}`} type="video/mp4" />
           Can't play this video
         </video>
       </div>
     );
+  }
+
+  startWatching(event) {
+    setInterval(() => {
+      this.state.currentWatchTimestamp = Math.floor(event.target.currentTime);
+      fetch(`http://localhost:1234/video/${this.state.id}/update_watch_timestamp?timestamp=${this.state.currentWatchTimestamp}`);
+    }, 5000);
   }
 }
 
