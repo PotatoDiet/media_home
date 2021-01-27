@@ -36,6 +36,7 @@ class Videos extends React.Component {
                 genres = {v.genres}
                 communityRating = {v.communityRating}
                 poster = {v.poster}
+                currentWatchTimestamp = {v.currentWatchTimestamp}
               />
             )
           })}

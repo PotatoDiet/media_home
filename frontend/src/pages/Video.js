@@ -23,7 +23,8 @@ class Video extends React.Component {
       title: data.title,
       genres: data.genres,
       communityRating: data.communityRating,
-      year: data.year
+      year: data.year,
+      currentWatchTimestamp: data.currentWatchTimestamp
     });
   }
 
@@ -51,6 +52,8 @@ class Video extends React.Component {
   }
 
   startWatching(event) {
+    event.target.currentTime = this.state.currentWatchTimestamp;
+
     setInterval(() => {
       this.state.currentWatchTimestamp = Math.floor(event.target.currentTime);
       fetch(`http://localhost:1234/video/${this.state.id}/update_watch_timestamp?timestamp=${this.state.currentWatchTimestamp}`);
