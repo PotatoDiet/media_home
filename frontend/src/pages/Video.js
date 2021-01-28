@@ -1,4 +1,5 @@
 import React from 'react';
+import './Video.css';
 
 class Video extends React.Component {
   constructor() {
@@ -34,14 +35,12 @@ class Video extends React.Component {
     };
 
     return (
-      <div>
-        <div>Title: {this.state.title}</div>
-        <div>Year: {this.state.year}</div>
+      <div className="video">
+        <h1>{this.state.title} ({this.state.year})</h1>
         <div>Genres: {this.state.genres}</div>
-        <div>Rating: {this.state.communityRating}</div>
+        <div>{this.state.communityRating} <i className="fas fa-star"></i></div>
 
         <video width="1024"
-               height="728"
                controls
                onLoadStart={this.startWatching}>
           <source src={`http://localhost:1234/stream/${this.state.id}`} type="video/mp4" />
