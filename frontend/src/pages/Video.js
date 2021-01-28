@@ -55,7 +55,9 @@ class Video extends React.Component {
     event.target.currentTime = this.state.currentWatchTimestamp;
 
     setInterval(() => {
-      this.state.currentWatchTimestamp = Math.floor(event.target.currentTime);
+      this.setState({
+        currentWatchTimestamp: Math.floor(event.target.currentTime)
+      });
       fetch(`http://localhost:1234/video/${this.state.id}/update_watch_timestamp?timestamp=${this.state.currentWatchTimestamp}`);
     }, 5000);
   }
