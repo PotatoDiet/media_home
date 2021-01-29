@@ -13,3 +13,9 @@
 .navbar a:hover {
   background-color: #e6e6e6;
 }
+
+.navbar input {
+  height: 80%;
+  align-self: center;
+  margin: 0 10px;
+}

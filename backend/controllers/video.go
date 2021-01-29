@@ -8,6 +8,7 @@ import (
   "net/http"
   "os"
   "strconv"
+  "fmt"
 )
 
 func (c Controller) Video(ctx echo.Context) error {
@@ -32,7 +33,15 @@ func (c Controller) VideoUpdateWatchTimestamp(ctx echo.Context) error {
 
 func (c Controller) Videos(ctx echo.Context) error {
   var videos []items.Video
-  c.DB.Order("title").Find(&videos)
+
+  search := ctx.QueryParam("search")
+  fmt.Println(search);
+  if search == "" {
+    c.DB.Order("title").Find(&videos)
+  } else {
+    c.DB.Where("title like ?", "%" + search + "%").Find(&videos)
+  }
+
   return ctx.JSON(http.StatusOK, videos)
 }
 

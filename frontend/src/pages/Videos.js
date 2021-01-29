@@ -13,8 +13,14 @@ class Videos extends React.Component {
     this.clean = this.clean.bind(this);
   }
 
-  async componentDidMount() {
-    const res = await fetch("http://localhost:1234/videos");
+  componentDidMount() {
+    this.componentDidUpdate();
+  }
+
+  async componentDidUpdate() {
+    const res = await fetch(
+      "http://localhost:1234" + window.location.pathname + window.location.search
+    );
     this.setState({ list: await res.json() });
   }
 

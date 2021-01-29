@@ -16,7 +16,7 @@ function Main() {
       <div className="content">
         <Switch>
           <Route exact path='/' component={Home}></Route>
-          <Route exact path='/videos' component={Videos}></Route>
+          <Route path='/videos' component={Videos}></Route>
           <Route path='/video/:id' component={Video}></Route>
         </Switch>
       </div>
