@@ -36,6 +36,7 @@ class Videos extends React.Component {
           {this.state.list.map(v => {
             return (
               <VideoTile
+                key = {v.id}
                 id = {v.id}
                 title = {v.title}
                 year = {v.year}
