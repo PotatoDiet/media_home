@@ -6,7 +6,7 @@ class VideoTile extends React.Component {
   render() {
     return (
       <Link
-        class="video-tile"
+        className="video-tile"
         to={`/video/${this.props.id}`}
         style={{backgroundImage: `url(http://localhost:1234/${this.props.poster})`}}>
       </Link>

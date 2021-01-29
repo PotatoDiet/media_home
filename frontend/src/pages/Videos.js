@@ -27,12 +27,12 @@ class Videos extends React.Component {
   render() {
     return (
       <div>
-        <div class="videos-menu">
+        <div className="videos-menu">
           <button onClick={this.update}>Update</button>
           <button onClick={this.clean}>Clean</button>
         </div>
 
-        <span class="videos">
+        <span className="videos">
           {this.state.list.map(v => {
             return (
               <VideoTile
