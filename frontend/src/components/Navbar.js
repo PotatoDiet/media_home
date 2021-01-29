@@ -1,4 +1,4 @@
-import { useHistory } from "react-router-dom";
+import { useHistory, Link } from "react-router-dom";
 import './Navbar.css';
 
 function Navbar() {
@@ -17,8 +17,8 @@ function Navbar() {
 
   return (
     <nav className="navbar">
-      <a href="/">Home</a>
-      <a href="/videos">Videos</a>
+      <Link to="/">Home</Link>
+      <Link to="/videos">Videos</Link>
       <input type="search" placeholder="Search" onKeyPress={search} />
     </nav>
   );
