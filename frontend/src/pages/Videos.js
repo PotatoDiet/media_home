@@ -1,66 +1,55 @@
-import React from 'react';
-import VideoTile from '../components/VideoTile';
-import './Videos.css'
+import React, { useEffect, useState } from "react";
+import VideoTile from "../components/VideoTile";
+import "./Videos.css"
 
-class Videos extends React.Component {
-  constructor() {
-    super();
-    this.state = {
-      list: []
-    };
+const Videos = () => {
+  const [list, setList] = useState([]);
 
-    this.update = this.update.bind(this);
-    this.clean = this.clean.bind(this);
-  }
+  useEffect(() => {
+    async function grabVideos() {
+      const res = await fetch(
+        "http://localhost:1234" + window.location.pathname + window.location.search
+      );
+      setList(await res.json());
+    }
+    grabVideos();
+  }, [window.location.search]);
 
-  componentDidMount() {
-    this.componentDidUpdate();
-  }
-
-  async componentDidUpdate() {
-    const res = await fetch(
-      "http://localhost:1234" + window.location.pathname + window.location.search
-    );
-    this.setState({ list: await res.json() });
-  }
-
-  render() {
-    return (
-      <div>
-        <div className="videos-menu">
-          <button onClick={this.update}>Update</button>
-          <button onClick={this.clean}>Clean</button>
-        </div>
-
-        <span className="videos">
-          {this.state.list.map(v => {
-            return (
-              <VideoTile
-                key = {v.id}
-                id = {v.id}
-                title = {v.title}
-                year = {v.year}
-                genres = {v.genres}
-                communityRating = {v.communityRating}
-                poster = {v.poster}
-                currentWatchTimestamp = {v.currentWatchTimestamp}
-              />
-            )
-          })}
-        </span>
-      </div>
-    );
-  }
-
-  async update() {
+  async function update() {
     await fetch("http://localhost:1234/videos/update");
-    this.forceUpdate();
+    setList([]);
   }
 
-  async clean() {
+  async function clean() {
     await fetch("http://localhost:1234/videos/clean");
-    this.forceUpdate();
+    setList([]);
   }
+
+  return (
+    <div>
+      <div className="videos-menu">
+        <button onClick={update}>Update</button>
+        <button onClick={clean}>Clean</button>
+      </div>
+
+      <span className="videos">
+        {list.map(v => {
+          return (
+            <VideoTile
+              key = {v.id}
+              id = {v.id}
+              title = {v.title}
+              year = {v.year}
+              genres = {v.genres}
+              communityRating = {v.communityRating}
+              poster = {v.poster}
+              currentWatchTimestamp = {v.currentWatchTimestamp}
+            />
+          )
+        })}
+      </span>
+    </div>
+  );
 }
 
 export { Videos };
