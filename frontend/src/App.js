@@ -6,20 +6,18 @@ import Videos from "./pages/Videos";
 import Video from "./pages/Video";
 import "./App.css";
 
-function App() {
- return (
-    <div>
-      <Navbar />
+const App = () => (
+  <div>
+    <Navbar />
 
-      <div className="content">
-        <Switch>
-          <Route exact path='/' component={Home}></Route>
-          <Route path='/videos' component={Videos}></Route>
-          <Route path='/video/:id' component={Video}></Route>
-        </Switch>
-      </div>
+    <div className="content">
+      <Switch>
+        <Route exact path='/' component={Home}></Route>
+        <Route path='/videos' component={Videos}></Route>
+        <Route path='/video/:id' component={Video}></Route>
+      </Switch>
     </div>
-  );
-}
+  </div>
+);
 
 export default App;

@@ -1,49 +1,45 @@
-import React from 'react';
-import './Video.css';
+import React, { useEffect, useState } from "react";
+import "./Video.css";
 import VideoPlayer from "../components/VideoPlayer";
 
-class Video extends React.Component {
-  constructor() {
-    super();
-    this.state = {
-      id: "",
-      title: "",
-      genres: "",
-      year: "",
-      currentWatchTimestamp: 0
+const Video = props => {
+  const [id, setId] = useState("");
+  const [title, setTitle] = useState("");
+  const [genres, setGenres] = useState("");
+  const [communityRating, setCommunityRating] = useState(0.0);
+  const [year, setYear] = useState("");
+  const [currentWatchTimestamp, setCurrentWatchTimestamp] = useState("");
+
+  useEffect(() => {
+    const grabData = async () => {
+      const id = props.match.params.id
+      const res = await fetch(`http://localhost:1234/video/${id}`);
+      const data = await res.json();
+
+      setId(id);
+      setTitle(data.title);
+      setGenres(data.genres);
+      setCommunityRating(data.communityRating);
+      setYear(data.year);
+      setCurrentWatchTimestamp(data.currentWatchTimestamp);
     }
+    grabData();
+  }, []);
+
+  if (id === "") {
+    return <div />
   }
 
-  async componentDidMount() {
-    const id = this.props.match.params.id
-    const res = await fetch(`http://localhost:1234/video/${id}`);
-    const data = await res.json();
-    this.setState({
-      id: id,
-      title: data.title,
-      genres: data.genres,
-      communityRating: data.communityRating,
-      year: data.year,
-      currentWatchTimestamp: data.currentWatchTimestamp
-    });
-  }
+  return (
+    <div className="video">
+      <h1>{title} ({year})</h1>
+      <div>Genres: {genres}</div>
+      <div>{communityRating} <i className="fas fa-star"></i></div>
 
-  render() {
-    if (this.state.id === "") {
-      return <div />
-    };
-
-    return (
-      <div className="video">
-        <h1>{this.state.title} ({this.state.year})</h1>
-        <div>Genres: {this.state.genres}</div>
-        <div>{this.state.communityRating} <i className="fas fa-star"></i></div>
-
-        <VideoPlayer id={this.state.id}
-                     watchtime={this.state.currentWatchTimestamp}/>
-      </div>
-    );
-  }
-}
+      <VideoPlayer id={id}
+                   watchtime={currentWatchTimestamp}/>
+    </div>
+  );
+};
 
 export default Video;

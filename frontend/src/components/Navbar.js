@@ -1,10 +1,10 @@
 import { useHistory, Link } from "react-router-dom";
 import './Navbar.css';
 
-function Navbar() {
+const Navbar = () => {
   const history = useHistory();
 
-  function search(event) {
+  const search = event => {
     // onSearch doesn't work on firefox, so this is the best we can do.
     if (event.key === "Enter") {
       if (event.target.value === "") {
