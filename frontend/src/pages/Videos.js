@@ -1,8 +1,10 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import VideoTile from "../components/VideoTile";
 import "./Videos.css"
 
 const Videos = () => {
+  const isMounted = useRef(true);
+
   const [list, setList] = useState([]);
 
   useEffect(() => {
@@ -10,10 +12,17 @@ const Videos = () => {
       const res = await fetch(
         "http://localhost:1234" + window.location.pathname + window.location.search
       );
-      setList(await res.json());
+
+      if (isMounted.current) {
+        setList(await res.json());
+      }
     }
     grabVideos();
-  }, [window.location.search]);
+
+    return () => {
+      isMounted.current = false;
+    }
+  });
 
   async function update() {
     await fetch("http://localhost:1234/videos/update");
