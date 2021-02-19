@@ -52,4 +52,4 @@ const Videos = () => {
   );
 }
 
-export { Videos };
+export default Videos;
