@@ -1,5 +1,6 @@
 import React from 'react';
 import './Video.css';
+import VideoPlayer from "../components/VideoPlayer";
 
 class Video extends React.Component {
   constructor() {
@@ -11,8 +12,6 @@ class Video extends React.Component {
       year: "",
       currentWatchTimestamp: 0
     }
-
-    this.startWatching = this.startWatching.bind(this);
   }
 
   async componentDidMount() {
@@ -40,25 +39,10 @@ class Video extends React.Component {
         <div>Genres: {this.state.genres}</div>
         <div>{this.state.communityRating} <i className="fas fa-star"></i></div>
 
-        <video width="1024"
-               controls
-               onLoadStart={this.startWatching}>
-          <source src={`http://localhost:1234/stream/${this.state.id}`} type="video/mp4" />
-          Can't play this video
-        </video>
+        <VideoPlayer id={this.state.id}
+                     watchtime={this.state.currentWatchTimestamp}/>
       </div>
     );
-  }
-
-  startWatching(event) {
-    event.target.currentTime = this.state.currentWatchTimestamp;
-
-    setInterval(() => {
-      this.setState({
-        currentWatchTimestamp: Math.floor(event.target.currentTime)
-      });
-      fetch(`http://localhost:1234/video/${this.state.id}/update_watch_timestamp?timestamp=${this.state.currentWatchTimestamp}`);
-    }, 5000);
   }
 }
 
