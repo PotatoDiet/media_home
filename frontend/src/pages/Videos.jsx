@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import VideoTile from '../components/VideoTile';
 import './Videos.css';
+import config from '../config';
 
 const Videos = () => {
   const isMounted = useRef(true);
@@ -10,7 +11,7 @@ const Videos = () => {
   useEffect(() => {
     async function grabVideos() {
       const res = await fetch(
-        `http://localhost:1234${window.location.pathname}${window.location.search}`,
+        `${config.backendUrl}${window.location.pathname}${window.location.search}`,
       );
 
       if (isMounted.current) {
@@ -25,12 +26,12 @@ const Videos = () => {
   });
 
   async function update() {
-    await fetch('http://localhost:1234/videos/update');
+    await fetch(`${config.backendUrl}/videos/update`);
     setList([]);
   }
 
   async function clean() {
-    await fetch('http://localhost:1234/videos/clean');
+    await fetch(`${config.backendUrl}/videos/clean`);
     setList([]);
   }
 
@@ -45,7 +46,7 @@ const Videos = () => {
         {list.map((v) => (
           <VideoTile
             key={v.id}
-            id={v.id}
+            id={v.id.toString()}
             title={v.title}
             year={v.year}
             genres={v.genres}

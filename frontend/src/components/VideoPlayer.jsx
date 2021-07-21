@@ -2,6 +2,7 @@
 
 import React, { useEffect, useRef } from 'react';
 import PropTypes from 'prop-types';
+import config from '../config';
 
 const VideoPlayer = ({ id, watchtime }) => {
   const ref = useRef();
@@ -9,7 +10,7 @@ const VideoPlayer = ({ id, watchtime }) => {
   useEffect(() => {
     const listener = setInterval(() => {
       const currWatchtime = Math.floor(ref.current.currentTime);
-      fetch(`http://localhost:1234/video/${id}/update_watch_timestamp?timestamp=${currWatchtime}`);
+      fetch(`${config.backendUrl}/video/${id}/update_watch_timestamp?timestamp=${currWatchtime}`);
     }, 5000);
 
     return () => {
@@ -24,7 +25,7 @@ const VideoPlayer = ({ id, watchtime }) => {
       onLoadStart={() => { ref.current.currentTime = watchtime; }}
       ref={ref}
     >
-      <source src={`http://localhost:1234/stream/${id}`} type="video/mp4" />
+      <source src={`${config.backendUrl}/stream/${id}`} type="video/mp4" />
       Can not play this video
     </video>
   );

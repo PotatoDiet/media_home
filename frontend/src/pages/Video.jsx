@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import './Video.css';
 import VideoPlayer from '../components/VideoPlayer';
+import config from '../config';
 
 const Video = ({ match }) => {
   const isMounted = useRef(true);
@@ -15,7 +16,7 @@ const Video = ({ match }) => {
 
   useEffect(() => {
     const grabData = async () => {
-      const res = await fetch(`http://localhost:1234/video/${match.params.id}`);
+      const res = await fetch(`${config.backendUrl}/video/${match.params.id}`);
       const data = await res.json();
 
       if (isMounted.current) {
@@ -49,6 +50,7 @@ const Video = ({ match }) => {
       </h1>
       <div>
         Genres:
+        {' '}
         {genres}
       </div>
       <div>
