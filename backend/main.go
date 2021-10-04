@@ -28,21 +28,28 @@ func main() {
 	e := echo.New()
 	e.Static("/assets", "assets")
 
+	e.Use(dbInjector(db))
+
 	e.Use(middleware.CORSWithConfig(middleware.CORSConfig{
 		AllowOrigins: []string{"http://localhost:3000"},
 		AllowMethods: []string{http.MethodGet, http.MethodPut, http.MethodPost, http.MethodDelete},
 	}))
 
-	c := controllers.Controller{
-		DB: db,
-	}
-
-	e.GET("/video/:id", c.Video)
-	e.GET("/video/:id/update_watch_timestamp", c.VideoUpdateWatchTimestamp)
-	e.GET("/videos", c.Videos)
-	e.GET("/videos/update", c.VideosUpdate)
-	e.GET("/videos/clean", c.VideosClean)
-	e.GET("/stream/:id", c.Stream)
+	e.GET("/video/:id", controllers.Video)
+	e.GET("/video/:id/update_watch_timestamp", controllers.VideoUpdateWatchTimestamp)
+	e.GET("/videos", controllers.Videos)
+	e.GET("/videos/update", controllers.VideosUpdate)
+	e.GET("/videos/clean", controllers.VideosClean)
+	e.GET("/stream/:id", controllers.Stream)
 
 	e.Start(":1234")
+}
+
+func dbInjector(db *gorm.DB) echo.MiddlewareFunc {
+	return func(next echo.HandlerFunc) echo.HandlerFunc {
+		return func(c echo.Context) error {
+			c.Set("db", db)
+			return next(c)
+		}
+	}
 }

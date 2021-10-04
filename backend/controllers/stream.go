@@ -7,12 +7,15 @@ import (
 	"potatodiet/media_home_backend/items"
 
 	"github.com/labstack/echo/v4"
+	"gorm.io/gorm"
 )
 
 // Stream returns a video file, specified by id.
-func (c Controller) Stream(ctx echo.Context) error {
+func Stream(ctx echo.Context) error {
 	var video items.Video
-	c.DB.First(&video, ctx.Param("id"))
+
+	db := ctx.Get("db").(*gorm.DB)
+	db.First(&video, ctx.Param("id"))
 
 	ext := filepath.Ext(video.Location)
 	if ext == ".mp4" {
