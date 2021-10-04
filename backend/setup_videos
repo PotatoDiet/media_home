@@ -1,6 +1,5 @@
 #!/usr/bin/env bash
 declare -a videos=(
-  "The Shawshank Redemption (1994)"
   "The Godfather (1972)"
   "The Godfather: Part II (1974)"
   "The Dark Knight (2008)"
@@ -13,5 +12,5 @@ declare -a videos=(
 )
 
 for v in "${videos[@]}"; do
-  cp --reflink=always "videos/The Shawshank Redemption (1994).mp4" "videos/$v.mp4"
+  ln -s "$PWD/videos/The Shawshank Redemption (1994).mp4" "$PWD/videos/$v.mp4"
 done
