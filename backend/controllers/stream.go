@@ -4,14 +4,14 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
-	"potatodiet/media_home_backend/items"
+	"potatodiet/media_home/items"
 
 	"github.com/labstack/echo/v4"
 	"gorm.io/gorm"
 )
 
 // Stream returns a video file, specified by id.
-func Stream(ctx echo.Context) error {
+func (controller Controller) Stream(ctx echo.Context) error {
 	var video items.Video
 
 	db := ctx.Get("db").(*gorm.DB)

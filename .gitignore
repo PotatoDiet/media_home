@@ -6,4 +6,4 @@ backend/assets
 backend/bin
 backend/transcodes
 backend/videos
-backend/test.db
+backend/dev.db

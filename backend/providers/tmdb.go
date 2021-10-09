@@ -5,7 +5,7 @@ import (
 	"net/http"
 	"os"
 	"path/filepath"
-	"potatodiet/media_home_backend/items"
+	"potatodiet/media_home/items"
 	"regexp"
 	"strings"
 

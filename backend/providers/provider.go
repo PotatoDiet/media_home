@@ -1,7 +1,7 @@
 package providers
 
 import (
-	"potatodiet/media_home_backend/items"
+	"potatodiet/media_home/items"
 )
 
 // Provider is the common interface used for all metadata providers.
