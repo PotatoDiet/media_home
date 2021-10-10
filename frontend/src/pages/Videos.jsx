@@ -1,11 +1,9 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import VideoTile from '../components/VideoTile';
 import './Videos.css';
 import config from '../config';
 
 const Videos = () => {
-  const isMounted = useRef(true);
-
   const [list, setList] = useState([]);
 
   useEffect(() => {
@@ -14,16 +12,10 @@ const Videos = () => {
         `${config.backendUrl}${window.location.pathname}${window.location.search}`,
       );
 
-      if (isMounted.current) {
-        setList(await res.json());
-      }
+      setList(await res.json());
     }
     grabVideos();
-
-    return () => {
-      isMounted.current = false;
-    };
-  });
+  }, [window.location.search]);
 
   async function update() {
     await fetch(`${config.backendUrl}/videos/update`);
