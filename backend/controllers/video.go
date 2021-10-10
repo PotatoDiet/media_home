@@ -9,7 +9,6 @@ import (
 	"strconv"
 
 	"github.com/labstack/echo/v4"
-	"gorm.io/gorm"
 )
 
 // Video returns a JSON encoded video, specified by id.
@@ -75,12 +74,10 @@ func (controller Controller) VideosUpdate(ctx echo.Context) error {
 func (controller Controller) VideosClean(ctx echo.Context) error {
 	var videos []items.Video
 
-	db := ctx.Get("db").(*gorm.DB)
-
-	db.Find(&videos)
+	controller.DB.Find(&videos)
 	for _, v := range videos {
 		if _, err := os.Stat(v.Location); os.IsNotExist(err) {
-			db.Delete(&v)
+			controller.DB.Delete(&v)
 		}
 	}
 
