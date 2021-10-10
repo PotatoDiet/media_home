@@ -13,10 +13,7 @@ import (
 
 // Video returns a JSON encoded video, specified by id.
 func (controller Controller) Video(ctx echo.Context) error {
-	var video items.Video
-
-	controller.DB.First(&video, ctx.Param("id"))
-
+	video := items.VideoGet(controller.DB, ctx.Param("id"))
 	return ctx.JSON(http.StatusOK, video)
 }
 
@@ -63,6 +60,8 @@ func (controller Controller) VideosUpdate(ctx echo.Context) error {
 		for _, provider := range providersList {
 			provider.Find(&v)
 		}
+
+		v.SaveGenres(controller.DB)
 
 		controller.DB.Save(&v)
 	}

@@ -22,7 +22,7 @@ const Video = ({ match }) => {
       if (isMounted.current) {
         setId(match.params.id);
         setTitle(data.title);
-        setGenres(data.genres);
+        setGenres(data.genres.join(', '));
         setCommunityRating(data.communityRating);
         setYear(data.year);
         setCurrentWatchTimestamp(data.currentWatchTimestamp);

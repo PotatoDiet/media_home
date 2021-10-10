@@ -3,7 +3,6 @@ package main
 import (
 	"net/http"
 	"potatodiet/media_home/controllers"
-	"potatodiet/media_home/items"
 
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
@@ -24,7 +23,6 @@ func main() {
 	if err != nil {
 		panic("error connecting to db")
 	}
-	db.AutoMigrate(&items.Video{})
 
 	controller := controllers.Controller{
 		DB: db,

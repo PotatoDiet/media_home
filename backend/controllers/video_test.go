@@ -45,13 +45,12 @@ func TestVideo(t *testing.T) {
 		"title",
 		"year",
 		"location",
-		"genres",
 		"community_rating",
 		"poster",
 		"current_watch_timestamp",
 	}
 	rows := sqlmock.NewRows(columns).AddRow(
-		1, "Big Buck Bunny", "2008", "mocks/Big Buck Bunny (2008).mp4", "Animation, Comedy, Family", 6.5, "/posters/1323213.png", 3)
+		1, "Big Buck Bunny", "2008", "mocks/Big Buck Bunny (2008).mp4", 6.5, "/posters/1323213.png", 3)
 	mock.ExpectQuery("SELECT (.+) FROM `videos`").WillReturnRows(rows)
 
 	expectedResponse := items.Video{
@@ -59,7 +58,7 @@ func TestVideo(t *testing.T) {
 		Title:                 "Big Buck Bunny",
 		Year:                  "2008",
 		Location:              "mocks/Big Buck Bunny (2008).mp4",
-		Genres:                "Animation, Comedy, Family",
+		Genres:                []string{},
 		CommunityRating:       6.5,
 		Poster:                "/posters/1323213.png",
 		CurrentWatchTimestamp: 3,
@@ -82,15 +81,14 @@ func TestVideoUpdateWatchTimestamp(t *testing.T) {
 		"title",
 		"year",
 		"location",
-		"genres",
 		"community_rating",
 		"poster",
 		"current_watch_timestamp",
 	}
 	rows := sqlmock.NewRows(columns).
-		AddRow(1, "Big Buck Bunny", "2008", "mocks/Big Buck Bunny (2008).mp4", "Animation, Comedy, Family", 6.5, "/posters/1323213.png", 3)
+		AddRow(1, "Big Buck Bunny", "2008", "mocks/Big Buck Bunny (2008).mp4", 6.5, "/posters/1323213.png", 3)
 	mock.ExpectQuery("SELECT (.+) FROM `videos`").WillReturnRows(rows)
-	mock.ExpectExec("UPDATE `videos`").WithArgs("Big Buck Bunny", "2008", "mocks/Big Buck Bunny (2008).mp4", "Animation, Comedy, Family", 6.5, "/posters/1323213.png", 10, 1).WillReturnResult(sqlmock.NewResult(1, 1))
+	mock.ExpectExec("UPDATE `videos`").WithArgs("Big Buck Bunny", "2008", "mocks/Big Buck Bunny (2008).mp4", 6.5, "/posters/1323213.png", 10, 1).WillReturnResult(sqlmock.NewResult(1, 1))
 
 	ctx.Set("id", 1)
 	ctx.QueryParams().Set("timestamp", "10")

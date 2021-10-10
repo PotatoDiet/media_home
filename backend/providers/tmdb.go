@@ -7,7 +7,6 @@ import (
 	"path/filepath"
 	"potatodiet/media_home/items"
 	"regexp"
-	"strings"
 
 	gotmdb "github.com/cyruzin/golang-tmdb"
 )
@@ -49,11 +48,9 @@ func (p Tmdb) Find(video *items.Video) error {
 		return err
 	}
 	video.CommunityRating = details.VoteAverage
-	video.Genres = ""
 	for _, genre := range details.Genres {
-		video.Genres += genre.Name + ", "
+		video.Genres = append(video.Genres, genre.Name)
 	}
-	video.Genres = strings.Trim(video.Genres, ", ")
 
 	return nil
 }
