@@ -9,5 +9,7 @@ public class AppDbContext : DbContext
     }
 
     public DbSet<Movie> Movies => Set<Movie>();
+    public DbSet<Series> Series => Set<Series>();
+    public DbSet<Episode> Episodes => Set<Episode>();
     public DbSet<Genre> Genres => Set<Genre>();
 }

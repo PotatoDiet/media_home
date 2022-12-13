@@ -77,7 +77,7 @@ public partial class MoviesController
             var (title, year) = DecodeMoviePath(path);
             if (title is null)
                 continue;
-            var movie = await _tmdbProvider.Find(title, year);
+            var movie = await _tmdbProvider.FindMovie(title, year);
             if (movie is null)
                 continue;
 
