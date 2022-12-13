@@ -1,17 +1,22 @@
 /* eslint-disable jsx-a11y/media-has-caption */
 
 import React, {useEffect, useRef} from 'react';
-import PropTypes from 'prop-types';
 
-const VideoPlayer = ({id, watchtime}) => {
-    const ref = useRef();
+type VideoPlayerProps = {
+    id: string;
+    watchtime: number;
+}
+
+export default function VideoPlayer({id, watchtime}: VideoPlayerProps) {
+    const ref = useRef<HTMLVideoElement>(null);
 
     useEffect(() => {
         const listener = setInterval(() => {
-            const currWatchtime = Math.floor(ref.current.currentTime);
+            // @ts-ignore
+            const currWatchtime = Math.floor(ref.current.currentTime ?? 0);
             fetch(`/api/Movies/${id}/UpdateWatchTimestamp`, {
                 method: "POST",
-                body: currWatchtime,
+                body: JSON.stringify(currWatchtime),
                 headers: {
                     "Content-Type": "application/json"
                 },
@@ -28,6 +33,7 @@ const VideoPlayer = ({id, watchtime}) => {
             width="1024"
             controls
             onLoadStart={() => {
+                // @ts-ignore
                 ref.current.currentTime = watchtime;
             }}
             ref={ref}
@@ -36,11 +42,4 @@ const VideoPlayer = ({id, watchtime}) => {
             Can not play this video
         </video>
     );
-};
-
-VideoPlayer.propTypes = {
-    id: PropTypes.string.isRequired,
-    watchtime: PropTypes.number.isRequired,
-};
-
-export default VideoPlayer;
+}

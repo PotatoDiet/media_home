@@ -26,6 +26,7 @@
     </ItemGroup>
 
     <ItemGroup>
+      <Folder Include="Libraries\Series" />
       <Folder Include="wwwroot\assets\posters" />
     </ItemGroup>
 </Project>

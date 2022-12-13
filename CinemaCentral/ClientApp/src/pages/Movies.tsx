@@ -2,6 +2,11 @@ import React, { useEffect, useState } from 'react';
 import MovieTile from '../components/MovieTile';
 import './Movies.css';
 
+type Movie = {
+  id: string;
+  posterPath: string;
+}
+
 export default function Movies() {
   const [list, setList] = useState([]);
 
@@ -32,7 +37,7 @@ export default function Movies() {
       </div>
 
       <span className="videos">
-        {list.map((v) => (
+        {list.map((v: Movie) => (
           <MovieTile
             key={v.id}
             id={v.id}

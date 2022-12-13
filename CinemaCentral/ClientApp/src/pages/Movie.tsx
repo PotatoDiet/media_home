@@ -1,12 +1,14 @@
 import React, { useEffect, useRef, useState } from 'react';
-import PropTypes from 'prop-types';
 import './Movie.css';
 import VideoPlayer from '../components/VideoPlayer';
+import {useParams} from "react-router-dom";
 
-const Video = ({ match }) => {
-  const isMounted = useRef(true);
+type Genre = {
+    name: string;
+}
 
-  const [id, setId] = useState('');
+const Video = () => {
+  const params = useParams();
   const [title, setTitle] = useState('');
   const [genres, setGenres] = useState('');
   const [communityRating, setCommunityRating] = useState(0.0);
@@ -15,26 +17,20 @@ const Video = ({ match }) => {
 
   useEffect(() => {
     const grabData = async () => {
-      const res = await fetch(`/api/Movies/${match.params.id}`);
+      const res = await fetch(`/api/Movies/${params.id}`);
       const data = await res.json();
 
-      if (isMounted.current) {
-        setId(match.params.id);
-        setTitle(data.title);
-        setGenres(data.genres?.map((genre) => genre.name).join(', '));
-        setCommunityRating(data.communityRating);
-        setYear(data.year);
-        setCurrentWatchTimestamp(data.currentWatchTimestamp);
-      }
+      setTitle(data.title);
+      setGenres(data.genres?.map((genre: Genre) => genre.name).join(', '));
+      setCommunityRating(data.communityRating);
+      setYear(data.year);
+      setCurrentWatchTimestamp(data.currentWatchTimestamp);
     };
+    
     grabData();
-
-    return () => {
-      isMounted.current = false;
-    };
   });
 
-  if (id === '') {
+  if (title === '' || params.id === undefined) {
     return <></>;
   }
 
@@ -58,17 +54,9 @@ const Video = ({ match }) => {
         <i className="fas fa-star" />
       </div>
 
-      <VideoPlayer id={id} watchtime={currentWatchTimestamp} />
+      <VideoPlayer id={params.id} watchtime={currentWatchTimestamp} />
     </div>
   );
-};
-
-Video.propTypes = {
-  match: PropTypes.shape({
-    params: PropTypes.shape({
-      id: PropTypes.string.isRequired,
-    }),
-  }).isRequired,
 };
 
 export default Video;

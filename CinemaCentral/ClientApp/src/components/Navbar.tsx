@@ -1,24 +1,26 @@
 import React, {useEffect, useState} from 'react';
-import { useHistory, Link } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import './Navbar.css';
 
 export default function Navbar() {
-  const history = useHistory();
+  const navigate = useNavigate();
   const [search, setSearch] = useState("");
   
   useEffect(() => {
     const searchQuery = new URLSearchParams(window.location.search).get("search");
-    console.log(searchQuery);
-    setSearch(searchQuery);
+    setSearch(searchQuery ?? "");
   }, [window.location.search]);
 
-  const onSearch = (event) => {
+  const onSearch = (event: React.KeyboardEvent<HTMLInputElement>) => {
+    
     // onSearch doesn't work on firefox, so this is the best we can do.
     if (event.key === 'Enter') {
-      if (event.target.value === '') {
-        history.push('/movies');
+      const target = event.target as HTMLInputElement;
+      
+      if (target.value === 'enter') {
+        navigate('/movies');
       } else {
-        history.push(`/movies?search=${event.target.value}`);
+        navigate(`/movies?search=${target.value}`);
       }
     }
   };
@@ -27,7 +29,7 @@ export default function Navbar() {
     <nav className="navbar">
       <Link to="/">Home</Link>
       <Link to="/movies">Movies</Link>
-      <input type="search" placeholder="Search" onKeyPress={onSearch} defaultValue={search} />
+      <input type="search" placeholder="Search" onKeyUp={onSearch} defaultValue={search} />
     </nav>
   );
 };
