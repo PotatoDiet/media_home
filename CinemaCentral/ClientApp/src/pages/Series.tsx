@@ -1,11 +1,11 @@
 import {useParams} from "react-router-dom";
 import React, {useEffect, useState} from "react";
 import EpisodeTile from "../components/EpisodeTile";
-import "./Movies.css"
 
 type Episode = {
     id: string;
     posterPath: string;
+    title: string;
 }
 
 export default function Series() {
@@ -23,12 +23,13 @@ export default function Series() {
     }, [window.location.search]);
     
     return (
-        <div className="videos">
+        <div className="flex flex-wrap">
             {episodes.map((v: Episode) => (
                 <EpisodeTile
                     key={v.id}
                     id={v.id}
                     poster={v.posterPath}
+                    title={v.title}
                 />
             ))}
         </div>
