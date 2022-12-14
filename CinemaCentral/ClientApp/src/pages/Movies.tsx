@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import MovieTile from '../components/MovieTile';
+import MediaTile from '../components/MediaTile';
 import './Movies.css';
 
 type Movie = {
@@ -38,9 +38,10 @@ export default function Movies() {
 
       <span className="videos">
         {list.map((v: Movie) => (
-          <MovieTile
+          <MediaTile
             key={v.id}
             id={v.id}
+            type="Movie"
             poster={v.posterPath}
           />
         ))}

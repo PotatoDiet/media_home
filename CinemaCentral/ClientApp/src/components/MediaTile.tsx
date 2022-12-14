@@ -4,15 +4,23 @@ import './MediaTile.css';
 
 type MediaTileProps = {
   poster: string;
-  path: string;
+  id: string;
+  type: string;
 }
 
-const MediaTile = ({ poster, path }: MediaTileProps) => (
-  <Link
-    to={path}
-    className="media-tile"
-    style={{ backgroundImage: `url(${poster})` }}
-  />
-);
+export default function MediaTile({ poster, id, type }: MediaTileProps) {
+  let path = "";
+  if (type == "Movie") {
+    path = `/movie/${id}`;
+  } else if (type === "Series") {
+    path = `/series/${id}`;
+  }
 
-export default MediaTile;
+  return (
+    <Link
+        to={path}
+        className="media-tile"
+        style={{backgroundImage: `url(${poster})`}}
+    />
+  );
+}

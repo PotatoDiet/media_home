@@ -9,6 +9,7 @@ public class Episode
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
     public Guid Id { get; set; }
     
+    public string Location { get; set; }
     public string Title { get; set; }
     public string PosterPath { get; set; }
     public uint CurrentWatchTimestamp { get; set; }

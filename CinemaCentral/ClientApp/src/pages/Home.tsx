@@ -1,10 +1,11 @@
 import React, {useEffect, useState} from "react";
-import MovieTile from "../components/MovieTile";
+import MediaTile from "../components/MediaTile";
 import './Movies.css';
 
 type Media = {
     id: string;
     posterPath: string;
+    mediaType: string;
 }
 
 export default function Home() {
@@ -22,9 +23,10 @@ export default function Home() {
         <div>
             <span className="videos">
                 {list.map((v: Media) => (
-                    <MovieTile
+                    <MediaTile
                         key={v.id}
                         id={v.id}
+                        type={v.mediaType}
                         poster={v.posterPath}
                     />
                 ))}

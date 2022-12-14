@@ -2,6 +2,7 @@ using System.Text.RegularExpressions;
 using CinemaCentral.Models;
 using CinemaCentral.Providers;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.StaticFiles;
 using Microsoft.EntityFrameworkCore;
 
 namespace CinemaCentral.Controllers;
@@ -55,18 +56,43 @@ public partial class SeriesController
                 await _tmdbProvider.FindEpisode(series.TmdbId, episodeDetails.Season, episodeDetails.Episode);
             if (episode is null)
                 continue;
+            episode.Location = file;
             
             series.Episodes.Add(episode);
             await _appDbContext.SaveChangesAsync();
         }
     }
 
-    [HttpGet("{id:Guid}")]
-    public async Task<Series?> Get([FromRoute] Guid id)
+    [HttpGet("GetSeries/{id:Guid}")]
+    public async Task<Series?> GetSeries([FromRoute] Guid id)
     {
         var series = await _appDbContext.Series.Include(s => s.Episodes).FirstOrDefaultAsync(s => s.Id == id);
         series?.Episodes?.ForEach(e => e.Series = null);
         return series;
+    }
+
+    [HttpGet("GetEpisode/{id:Guid}")]
+    public async Task<Episode?> GetEpisode([FromRoute] Guid id)
+    {
+        return await _appDbContext.Episodes.FindAsync(id);
+    }
+    
+    [HttpGet("GetEpisodeStream/{id:Guid}")]
+    public async Task<FileStreamResult?> GetEpisodeStream([FromRoute] Guid id)
+    {
+        var episode = await _appDbContext.Episodes.FindAsync(id);
+        if (episode?.Location is null)
+            return null;
+
+        new FileExtensionContentTypeProvider()
+            .TryGetContentType(episode.Location, out var contentType);
+        contentType ??= "application/octet-stream";
+
+        var fs = File.OpenRead(episode.Location);
+        return new FileStreamResult(fs, contentType)
+        {
+            EnableRangeProcessing = true
+        };
     }
     
     private static (string? Title, int Season, int Episode) DecodeEpisodePath(string path)
