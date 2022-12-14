@@ -14,4 +14,6 @@ public class Episode
     public string PosterPath { get; set; }
     public uint CurrentWatchTimestamp { get; set; }
     public Series Series { get; set; }
+    public int SeasonNumber { get; set; }
+    public int EpisodeNumber { get; set; }
 }

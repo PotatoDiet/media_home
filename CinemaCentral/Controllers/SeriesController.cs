@@ -14,7 +14,7 @@ public partial class SeriesController
     private readonly AppDbContext _appDbContext;
     private readonly TmdbProvider _tmdbProvider = new();
     
-    [GeneratedRegex(@"([\w,': ]+) - S(\d{2})E(\d{2}) - ([\w,': ]+)")]
+    [GeneratedRegex(@"([\w,': ]+) (?:- )?S(\d{2})E(\d{2}) (?:- )?([\w,': ]+)")]
     private static partial Regex DecodeEpisodePathRegex();
 
     public SeriesController(AppDbContext appDbContext)
@@ -57,6 +57,7 @@ public partial class SeriesController
             if (episode is null)
                 continue;
             episode.Location = file;
+            episode.SeasonNumber = episodeDetails.Season;
             
             series.Episodes.Add(episode);
             await _appDbContext.SaveChangesAsync();

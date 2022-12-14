@@ -49,6 +49,8 @@ public class TmdbProvider
     
     public async Task<Episode?> FindEpisode(int seriesId, int season, int episode)
     {
+        Thread.Sleep(1000);
+        
         var result = await _client.GetTvEpisodeAsync(seriesId, season, episode);
         if (result is null)
             return null;
@@ -56,7 +58,9 @@ public class TmdbProvider
         return new Episode()
         {
             Title = result.Name,
-            PosterPath = await DownloadPoster(result.StillPath)
+            PosterPath = await DownloadPoster(result.StillPath),
+            SeasonNumber = result.SeasonNumber,
+            EpisodeNumber = result.EpisodeNumber
         };
     }
 
