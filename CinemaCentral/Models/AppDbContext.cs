@@ -12,4 +12,5 @@ public class AppDbContext : DbContext
     public DbSet<Series> Series => Set<Series>();
     public DbSet<Episode> Episodes => Set<Episode>();
     public DbSet<Genre> Genres => Set<Genre>();
+    public DbSet<User> Users => Set<User>();
 }

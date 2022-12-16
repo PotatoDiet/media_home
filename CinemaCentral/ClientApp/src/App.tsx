@@ -7,6 +7,7 @@ import Movie from './pages/Movie';
 import './App.css';
 import Series from "./pages/Series";
 import Episode from "./pages/Episode";
+import Login from "./pages/Login";
 
 export default function App() {
     return (
@@ -20,6 +21,7 @@ export default function App() {
                     <Route path="movie/:id" element={<Movie/>}/>
                     <Route path="series/:id" element={<Series />}/>
                     <Route path="episode/:id" element={<Episode />}/>
+                    <Route path="login" element={<Login />}/>
                 </Routes>
             </div>
         </div>

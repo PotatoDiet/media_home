@@ -12,7 +12,6 @@ export default function Navbar() {
   }, [window.location.search]);
 
   const onSearch = (event: React.KeyboardEvent<HTMLInputElement>) => {
-    
     // onSearch doesn't work on firefox, so this is the best we can do.
     if (event.key === 'Enter') {
       const target = event.target as HTMLInputElement;
@@ -30,6 +29,14 @@ export default function Navbar() {
       <Link to="/">Home</Link>
       <Link to="/movies">Movies</Link>
       <input type="search" placeholder="Search" onKeyUp={onSearch} defaultValue={search} />
+      <Link to="/login">Login</Link>
+      <button onClick={(e) => logout()}>Logout</button>
     </nav>
   );
 };
+
+function logout() {
+  fetch("/api/User/Logout", {
+    method: "POST"
+  });
+}

@@ -1,6 +1,7 @@
 using System.Text.RegularExpressions;
 using CinemaCentral.Models;
 using CinemaCentral.Providers;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.StaticFiles;
 using Microsoft.EntityFrameworkCore;
@@ -23,12 +24,14 @@ public partial class SeriesController
     }
     
     [HttpGet]
+    [Authorize]
     public async Task<List<Series>> All()
     {
         return await _appDbContext.Series.ToListAsync();
     }
 
     [HttpPost("Update")]
+    [Authorize]
     public async Task Update()
     {
         await _appDbContext.Database.ExecuteSqlRawAsync("DELETE FROM Series");
@@ -65,6 +68,7 @@ public partial class SeriesController
     }
 
     [HttpGet("GetSeries/{id:Guid}")]
+    [Authorize]
     public async Task<Series?> GetSeries([FromRoute] Guid id)
     {
         var series = await _appDbContext.Series.Include(s => s.Episodes).FirstOrDefaultAsync(s => s.Id == id);
@@ -73,12 +77,14 @@ public partial class SeriesController
     }
 
     [HttpGet("GetEpisode/{id:Guid}")]
+    [Authorize]
     public async Task<Episode?> GetEpisode([FromRoute] Guid id)
     {
         return await _appDbContext.Episodes.FindAsync(id);
     }
     
     [HttpGet("GetEpisodeStream/{id:Guid}")]
+    [Authorize]
     public async Task<FileStreamResult?> GetEpisodeStream([FromRoute] Guid id)
     {
         var episode = await _appDbContext.Episodes.FindAsync(id);

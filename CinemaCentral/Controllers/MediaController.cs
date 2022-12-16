@@ -1,4 +1,5 @@
 using CinemaCentral.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -16,6 +17,7 @@ public class MediaController
     }
     
     [HttpGet]
+    [Authorize]
     public async Task<List<Media>> All()
     {
         var movies = from movie in await _appDbContext.Movies.ToListAsync()

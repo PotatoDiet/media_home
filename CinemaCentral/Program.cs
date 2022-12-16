@@ -1,6 +1,10 @@
+using System.Text;
 using System.Text.Json.Serialization;
 using CinemaCentral.Models;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -22,6 +26,30 @@ builder.Services.AddSwaggerGen();
 
 builder.Services.AddCors();
 builder.Services.AddResponseCompression();
+
+builder.Services
+    .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddCookie()
+    .AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, options =>
+    {
+        options.TokenValidationParameters = new TokenValidationParameters()
+        {
+            ValidateIssuerSigningKey = true,
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("JustATestJustATestJustATest")),
+            ValidateIssuer = false,
+            ValidateAudience = false,
+            ValidateLifetime = false
+        };
+
+        options.Events = new JwtBearerEvents()
+        {
+            OnMessageReceived = context =>
+            {
+                context.Token = context.Request.Cookies["Token"];
+                return Task.CompletedTask;
+            }
+        };
+    });
 
 var app = builder.Build();
 
@@ -49,6 +77,9 @@ app.UseStaticFiles(new StaticFileOptions()
 });
 app.UseRouting();
 app.UseResponseCompression();
+
+app.UseAuthentication();
+app.UseAuthorization();
 
 app.MapControllerRoute(
     name: "default",
