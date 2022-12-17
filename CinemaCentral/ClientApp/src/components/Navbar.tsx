@@ -1,6 +1,11 @@
-import React, {useEffect, useState} from 'react';
-import { useNavigate, Link } from 'react-router-dom';
+import React, {useCallback, useEffect, useState} from 'react';
+import {useNavigate, Link, redirect} from 'react-router-dom';
 import './Navbar.css';
+
+type User = {
+  id: string,
+  name: string,
+}
 
 export default function Navbar() {
   const navigate = useNavigate();
@@ -10,6 +15,13 @@ export default function Navbar() {
     const searchQuery = new URLSearchParams(window.location.search).get("search");
     setSearch(searchQuery ?? "");
   }, [window.location.search]);
+  
+  const logout = useCallback(async () => {
+    await fetch("/api/User/Logout", {
+      method: "POST"
+    });
+    navigate("/login");
+  }, [navigate]);
 
   const onSearch = (event: React.KeyboardEvent<HTMLInputElement>) => {
     // onSearch doesn't work on firefox, so this is the best we can do.
@@ -29,14 +41,7 @@ export default function Navbar() {
       <Link to="/">Home</Link>
       <Link to="/movies">Movies</Link>
       <input type="search" placeholder="Search" onKeyUp={onSearch} defaultValue={search} />
-      <Link to="/login">Login</Link>
       <button onClick={(e) => logout()}>Logout</button>
     </nav>
   );
 };
-
-function logout() {
-  fetch("/api/User/Logout", {
-    method: "POST"
-  });
-}

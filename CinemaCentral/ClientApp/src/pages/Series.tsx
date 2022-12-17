@@ -1,6 +1,7 @@
-import {useParams} from "react-router-dom";
+import {useNavigate, useParams} from "react-router-dom";
 import React, {useEffect, useState} from "react";
 import EpisodeTile from "../components/EpisodeTile";
+import {ccFetch} from "../utitilies";
 
 type Season = {
     seasonNumber: number;
@@ -17,12 +18,13 @@ type Episode = {
 
 export default function Series() {
     const params = useParams();
+    const navigate = useNavigate();
     
     let [seasons, setSeasons] = useState([] as Season[]);
 
     useEffect( () => {
         async function grabVideos() {
-            const res = await fetch(`/api/Series/GetSeries/${params.id}`);
+            const res = await ccFetch(`/api/Series/GetSeries/${params.id}`, "GET", navigate);
             const data = await res.json();
             
             const seasonsDict: { [key: number]: Episode[] } = {};

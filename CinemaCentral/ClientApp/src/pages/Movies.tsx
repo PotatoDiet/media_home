@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import MediaTile from '../components/MediaTile';
 import './Movies.css';
+import {ccFetch} from "../utitilies";
+import {Outlet, useNavigate} from "react-router-dom";
 
 type Movie = {
   id: string;
@@ -8,29 +10,29 @@ type Movie = {
 }
 
 export default function Movies() {
+  const navigate = useNavigate();
   const [list, setList] = useState([]);
 
   useEffect( () => {
     async function grabVideos() {
-      const res = await fetch(`/api/Movies${window.location.search}`);
+      const res = await ccFetch(`/api/Movies${window.location.search}`,"GET", navigate);
       setList(await res.json());
-      console.log(list);
     }
     grabVideos();
   }, [window.location.search]);
 
   async function update() {
-    await fetch("/api/Movies/Update", { method: "POST" });
+    await ccFetch("/api/Movies/Update", "POST", navigate);
     setList([]);
   }
 
   async function clean() {
-    await fetch("/api/Movies/Clean");
+    await ccFetch("/api/Movies/Clean", "GET", navigate);
     setList([]);
   }
 
   return (
-    <div>
+    <>
       <div className="videos-menu">
         <button type="button" onClick={update}>Update</button>
         <button type="button" onClick={clean}>Clean</button>
@@ -46,6 +48,6 @@ export default function Movies() {
           />
         ))}
       </span>
-    </div>
+    </>
   );
 };

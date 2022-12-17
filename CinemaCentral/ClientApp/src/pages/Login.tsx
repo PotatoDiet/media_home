@@ -1,13 +1,15 @@
 import React, {FormEvent, useState} from "react";
+import {useNavigate} from "react-router-dom";
 
 export default function Login() {
+    const navigate = useNavigate();
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
     
     async function handleSubmit(e: FormEvent) {
         e.preventDefault();
         
-        await fetch("/api/User/Login", {
+        const response = await fetch("/api/User/Login", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
@@ -17,6 +19,9 @@ export default function Login() {
                 "password": password
             })
         })
+        if (response.status === 200) {
+            navigate("/");
+        }
     }
     
     return (

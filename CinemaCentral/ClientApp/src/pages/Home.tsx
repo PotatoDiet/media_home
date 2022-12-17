@@ -1,6 +1,9 @@
 import React, {useEffect, useState} from "react";
 import MediaTile from "../components/MediaTile";
 import './Movies.css';
+import {ccFetch} from "../utitilies";
+import {json, useNavigate} from "react-router-dom";
+import {useQuery} from "react-query";
 
 type Media = {
     id: string;
@@ -9,20 +12,19 @@ type Media = {
 }
 
 export default function Home() {
-    const [list, setList] = useState([]);
-
-    useEffect( () => {
-        async function grabVideos() {
-            const res = await fetch(`/api/Media${window.location.search}`);
-            setList(await res.json());
-        }
-        grabVideos();
-    }, [window.location.search]);
+    const navigate = useNavigate();
+    
+    const { isLoading, error, data } = useQuery("mediaData", async () => {
+        const response = await ccFetch(`/api/Media${window.location.search}`, "GET", navigate);
+        return await response.json();
+    });
+    
+    if (isLoading) return <>Loading...</>;
     
     return (
         <div>
             <span className="videos">
-                {list.map((v: Media) => (
+                {data.map((v: Media) => (
                     <MediaTile
                         key={v.id}
                         id={v.id}

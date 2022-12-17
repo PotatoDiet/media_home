@@ -1,7 +1,8 @@
 import React, { useEffect, useRef, useState } from 'react';
 import './Movie.css';
 import VideoPlayer from '../components/VideoPlayer';
-import {useParams} from "react-router-dom";
+import {useNavigate, useParams} from "react-router-dom";
+import {ccFetch} from "../utitilies";
 
 type Genre = {
     name: string;
@@ -9,6 +10,7 @@ type Genre = {
 
 const Video = () => {
   const params = useParams();
+  const navigate = useNavigate();
   const [title, setTitle] = useState('');
   const [genres, setGenres] = useState('');
   const [communityRating, setCommunityRating] = useState(0.0);
@@ -17,7 +19,7 @@ const Video = () => {
 
   useEffect(() => {
     const grabData = async () => {
-      const res = await fetch(`/api/Movies/${params.id}`);
+      const res = await ccFetch(`/api/Movies/${params.id}`, "GET", navigate);
       const data = await res.json();
 
       setTitle(data.title);

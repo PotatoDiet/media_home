@@ -31,7 +31,7 @@ public class UserController : Controller
     {
         if (await _appDbContext.Users.Where(u => u.Name == user.Name).AnyAsync())
         {
-            return new ConflictResult();
+            return Conflict();
         }
 
         var password = Encoding.UTF8.GetBytes(user.Password);
@@ -47,7 +47,7 @@ public class UserController : Controller
         });
         await _appDbContext.SaveChangesAsync();
 
-        return new OkResult();
+        return Ok();
     }
 
     [AllowAnonymous]
@@ -57,13 +57,13 @@ public class UserController : Controller
         var user = await _appDbContext.Users.FirstOrDefaultAsync(u => u.Name == requestedUser.Name);
         if (user is null)
         {
-            return new NotFoundResult();
+            return NotFound();
         }
         
         var password = Encoding.UTF8.GetBytes(requestedUser.Password);
         if (!_passwordService.VerifyHash(password, user.PasswordSalt, user.PasswordHash))
         {
-            return new BadRequestResult();
+            return BadRequest();
         }
 
         var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("JustATestJustATestJustATest"));
@@ -80,7 +80,7 @@ public class UserController : Controller
             HttpOnly = true
         });
 
-        return new OkObjectResult(tokenString);
+        return Ok(tokenString);
     }
 
     [Authorize]
@@ -89,6 +89,20 @@ public class UserController : Controller
     {
         HttpContext.Response.Cookies.Delete("Token");
         return Ok();
+    }
+
+    [Authorize]
+    [HttpGet("Current")]
+    public async Task<IActionResult> Current()
+    {
+        var idClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        if (idClaim is null)
+        {
+            return NotFound();
+        }
+        
+        var id = Guid.Parse(idClaim);
+        return Ok(await _appDbContext.Users.FirstOrDefaultAsync(u => u.Id == id));
     }
 }
 
