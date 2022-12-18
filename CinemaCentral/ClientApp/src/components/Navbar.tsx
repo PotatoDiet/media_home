@@ -41,7 +41,8 @@ export default function Navbar() {
       <Link to="/">Home</Link>
       <Link to="/movies">Movies</Link>
       <input type="search" placeholder="Search" onKeyUp={onSearch} defaultValue={search} />
-      <button onClick={(e) => logout()}>Logout</button>
+      <Link to="/admin">Admin</Link>
+      <Link to="#" onClick={(e) => logout()}>Logout</Link>
     </nav>
   );
 };
