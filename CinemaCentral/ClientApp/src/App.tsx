@@ -8,11 +8,19 @@ import Series from "./pages/Series";
 import Episode from "./pages/Episode";
 import Login from "./pages/Login";
 import ContentLayout from "./components/ContentLayout";
+import AdminLayout from "./components/AdminLayout";
+import AdminUsers from "./pages/AdminUsers";
+import {NewUser} from "./pages/NewUser";
 
 export default function App() {
     return (
         <Routes>
             <Route path="/login" element={<Login />} />
+            
+            <Route path="/admin" element={<AdminLayout />}>
+                <Route path="users" element={<AdminUsers />}/>
+                <Route path="users/new" element={<NewUser />}/>
+            </Route>
     
             <Route path="/" element={<ContentLayout />}>
                 <Route index element={<Home/>}/>

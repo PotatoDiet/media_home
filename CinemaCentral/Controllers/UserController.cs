@@ -3,10 +3,7 @@ using System.Security.Claims;
 using System.Text;
 using CinemaCentral.ClientApp.Services;
 using CinemaCentral.Models;
-using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -23,6 +20,13 @@ public class UserController : Controller
     public UserController(AppDbContext appDbContext)
     {
         _appDbContext = appDbContext;
+    }
+
+    [Authorize(Roles = "Admin")]
+    [HttpGet]
+    public async Task<IActionResult> All()
+    {
+        return Ok(await _appDbContext.Users.ToListAsync());
     }
     
     [AllowAnonymous]
@@ -43,7 +47,7 @@ public class UserController : Controller
             Name = user.Name,
             PasswordHash = hash,
             PasswordSalt = salt,
-            Role = UserRole.Normal
+            Role = user.Role
         });
         await _appDbContext.SaveChangesAsync();
 
@@ -71,7 +75,7 @@ public class UserController : Controller
         var claims = new[]
         {
             new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
-            new Claim(ClaimTypes.Role, nameof(user.Role))
+            new Claim(ClaimTypes.Role, user.Role.ToString())
         };
         var token = new JwtSecurityToken("Issuer", "Audience", claims, expires: DateTime.Now.AddDays(1), signingCredentials: credentials);
         var tokenString = new JwtSecurityTokenHandler().WriteToken(token);
@@ -104,6 +108,48 @@ public class UserController : Controller
         var id = Guid.Parse(idClaim);
         return Ok(await _appDbContext.Users.FirstOrDefaultAsync(u => u.Id == id));
     }
+
+    [Authorize(Roles = "Admin")]
+    [HttpPost("{id:Guid}")]
+    public async Task<IActionResult> Edit([FromRoute] Guid id, [FromBody] UserEdit userChanges)
+    {
+        var user = await _appDbContext.Users.FindAsync(id);
+        if (user is null)
+        {
+            return NotFound();
+        }
+
+        Guid.TryParse(User.FindFirstValue(ClaimTypes.NameIdentifier), out var currentUser);
+        if (currentUser != id)
+        {
+            user.Role = userChanges.Role;
+        }
+        user.Name = userChanges.Name;
+        await _appDbContext.SaveChangesAsync();
+        return Ok();
+    }
+
+    [Authorize(Roles = "Admin")]
+    [HttpDelete("{id:Guid}")]
+    public async Task<IActionResult> Edit([FromRoute] Guid id)
+    {
+        var user = await _appDbContext.Users.FindAsync(id);
+        if (user is null)
+        {
+            return NotFound();
+        }
+
+        var firstAdmin = await _appDbContext.Users.FirstOrDefaultAsync(u => u.Role == UserRole.Admin);
+        if (firstAdmin?.Id == user.Id)
+        {
+            return BadRequest();
+        }
+
+        _appDbContext.Users.Remove(user);
+        await _appDbContext.SaveChangesAsync();
+        return Ok();
+    }
 }
 
-public readonly record struct UserRequest(string Name, string Password);
+public readonly record struct UserRequest(string Name, string Password, UserRole Role);
+public readonly record struct UserEdit(string Name, UserRole Role);
