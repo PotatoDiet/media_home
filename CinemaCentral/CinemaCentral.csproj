@@ -18,6 +18,7 @@
         <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="6.0.7" />
         <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0" />
         <PackageReference Include="TMDbLib" Version="1.9.2" />
+        <PackageReference Include="TorrentTitleParser" Version="1.0.3" />
     </ItemGroup>
 
     <ItemGroup>

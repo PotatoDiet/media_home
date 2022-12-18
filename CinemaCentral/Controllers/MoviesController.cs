@@ -1,4 +1,3 @@
-using System.Text.RegularExpressions;
 using CinemaCentral.Models;
 using CinemaCentral.Providers;
 using Microsoft.AspNetCore.Authentication;
@@ -6,6 +5,8 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.StaticFiles;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.FileSystemGlobbing;
+using TorrentTitleParser;
 
 namespace CinemaCentral.Controllers;
 
@@ -20,9 +21,6 @@ public partial class MoviesController : Controller
     {
         _appDbContext = appDbContext;
     }
-
-    [GeneratedRegex(@"([\w,': ]+) \((\d{4})\)")]
-    private static partial Regex DecodeMoviePathRegex();
 
     [HttpGet]
     [Authorize]
@@ -80,11 +78,22 @@ public partial class MoviesController : Controller
         await _appDbContext.Database.ExecuteSqlRawAsync("DELETE FROM Movies");
         await _appDbContext.Database.ExecuteSqlRawAsync("DELETE FROM Genres");
 
-        foreach (var path in Directory.GetFiles("Libraries/Movies"))
+        var matcher = new Matcher();
+        matcher.AddInclude("**/*.mp4");
+        matcher.AddInclude("**/*.mkv");
+        matcher.AddInclude("**/*.mov");
+        matcher.AddInclude("**/*.avi");
+
+        foreach (var file in matcher.GetResultsInFullPath("Libraries/Movies"))
         {
-            var (title, year) = DecodeMoviePath(path);
+            var parsedFilename = new Torrent(Path.GetFileName(file));
+            var title = parsedFilename.Title;
+            var year = Convert.ToUInt32(parsedFilename.Year);
             if (title is null)
+            {
                 continue;
+            }
+            
             var movie = await _tmdbProvider.FindMovie(title, year);
             if (movie is null)
                 continue;
@@ -98,22 +107,10 @@ public partial class MoviesController : Controller
 
             movie.Genres = genres;
 
-            movie.Location = path;
+            movie.Location = file;
 
             _appDbContext.Add(movie);
+            await _appDbContext.SaveChangesAsync();
         }
-
-        await _appDbContext.SaveChangesAsync();
-    }
-
-    private static (string? title, uint year) DecodeMoviePath(string path)
-    {
-        var match = DecodeMoviePathRegex().Match(path);
-        if (!match.Success)
-            return (null, 0);
-
-        var title = match.Groups[1].Value;
-        var year = uint.Parse(match.Groups[2].Value);
-        return (title, year);
     }
 }

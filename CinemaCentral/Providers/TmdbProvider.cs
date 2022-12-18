@@ -10,6 +10,8 @@ public class TmdbProvider
 
     public async Task<Movie?> FindMovie(string title, uint year)
     {
+        Thread.Sleep(1000);
+        
         var results = await _client.SearchMovieAsync(title, year: Convert.ToInt32(year));
         var result = results?.Results.FirstOrDefault();
         if (result is null)
