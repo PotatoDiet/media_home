@@ -19,6 +19,13 @@ function Sidebar() {
                             Users
                         </Link>
                     </li>
+
+                    <li>
+                        <Link to="/admin/libraries"
+                              className="ml-3 flex items-center p-2 text-base font-normal text-slate-900 rounded-lg hover:bg-slate-200">
+                            Libraries
+                        </Link>
+                    </li>
                 </ul>
             </div>
         </aside>

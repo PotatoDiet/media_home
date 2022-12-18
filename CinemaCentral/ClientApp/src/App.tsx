@@ -11,6 +11,7 @@ import ContentLayout from "./components/ContentLayout";
 import AdminLayout from "./components/AdminLayout";
 import AdminUsers from "./pages/AdminUsers";
 import {NewUser} from "./pages/NewUser";
+import AdminLibraries from "./pages/AdminLibraries";
 
 export default function App() {
     return (
@@ -20,6 +21,7 @@ export default function App() {
             <Route path="/admin" element={<AdminLayout />}>
                 <Route path="users" element={<AdminUsers />}/>
                 <Route path="users/new" element={<NewUser />}/>
+                <Route path="libraries" element={<AdminLibraries />}/>
             </Route>
     
             <Route path="/" element={<ContentLayout />}>
