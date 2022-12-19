@@ -37,6 +37,7 @@ export default function VideoPlayer({id, watchtime}: VideoPlayerProps) {
                 ref.current.currentTime = watchtime;
             }}
             ref={ref}
+            autoPlay
         >
             <source src={`/api/Movies/${id}/Stream`}/>
             Can not play this video

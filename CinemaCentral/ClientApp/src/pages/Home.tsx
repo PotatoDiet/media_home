@@ -1,6 +1,5 @@
 import React, {useEffect, useState} from "react";
 import MediaTile from "../components/MediaTile";
-import './Movies.css';
 import {ccFetch} from "../utitilies";
 import {json, useNavigate} from "react-router-dom";
 import {useQuery} from "react-query";
@@ -22,7 +21,7 @@ export default function Home() {
     if (isLoading) return <>Loading...</>;
     
     return (
-        <span className="videos">
+        <div className="flex flex-wrap">
             {data.map((v: Media) => (
                 <MediaTile
                     key={v.id}
@@ -31,6 +30,6 @@ export default function Home() {
                     poster={v.posterPath}
                 />
             ))}
-        </span>
+        </div>
     );
 };

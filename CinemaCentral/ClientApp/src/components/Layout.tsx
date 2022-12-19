@@ -63,7 +63,7 @@ function Sidebar() {
     };
     
     return (
-        <ul className="basis-72">
+        <ul className="basis-72 flex-none">
             <SidebarEntry to="/">Home</SidebarEntry>
             <SidebarEntry to="/movies">Movies</SidebarEntry>
             <SidebarEntry to="#" onClick={() => logout()}>Logout</SidebarEntry>
