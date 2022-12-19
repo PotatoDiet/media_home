@@ -26,7 +26,7 @@ function Sidebar() {
     useEffect(() => {
         const searchQuery = new URLSearchParams(location.search).get("search");
         setSearch(searchQuery ?? "");
-    }, [location]);
+    }, [location.search, location.pathname]);
     
     useQuery("checkAdmin", {
         queryFn: () => {
@@ -61,7 +61,11 @@ function Sidebar() {
     };
     
     return (
-        <div className="basis-72 flex-none divide-y">
+        <div className="basis-72 flex-none divide-y border-x h-screen">
+            <div>
+                <input className="h-10 py-2 w-full px-5" type="search" placeholder="Search" onKeyUp={onSearch} onChange={(e) => setSearch(e.target.value)} value={search} />
+            </div>
+            
             <div>
                 <div className="py-2 px-5 text-center text-sm font-bold text-slate-900">Libraries</div>
                 <SidebarEntry to="/">All</SidebarEntry>
@@ -80,10 +84,6 @@ function Sidebar() {
             <div>
                 <div className="py-2 px-5 text-center text-sm font-bold text-slate-900">Profile</div>
                 <SidebarEntry to="#" onClick={() => logout()}>Logout</SidebarEntry>
-            </div>
-
-            <div>
-                <input className="h-10 py-2 w-full px-5" type="search" placeholder="Search" onKeyUp={onSearch} defaultValue={search} />
             </div>
         </div>
     );
