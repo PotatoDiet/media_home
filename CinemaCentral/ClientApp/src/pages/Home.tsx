@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from "react";
 import MediaTile from "../components/MediaTile";
 import {ccFetch} from "../utitilies";
-import {json, useNavigate} from "react-router-dom";
+import {json, useLocation, useNavigate} from "react-router-dom";
 import {useQuery} from "react-query";
 
 type Media = {
@@ -12,11 +12,16 @@ type Media = {
 
 export default function Home() {
     const navigate = useNavigate();
+    const { search } = useLocation();
     
-    const { isLoading, error, data } = useQuery("mediaData", async () => {
-        const response = await ccFetch(`/api/Media${window.location.search}`, "GET", navigate);
+    const { isLoading, data, refetch } = useQuery("mediaData", async () => {
+        const response = await ccFetch(`/api/Media${search}`, "GET", navigate);
         return await response.json();
     });
+
+    useEffect(() => {
+        refetch();
+    }, [search])
     
     if (isLoading) return <>Loading...</>;
     

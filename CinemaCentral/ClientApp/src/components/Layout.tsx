@@ -54,10 +54,10 @@ function Sidebar() {
         if (event.key === 'Enter') {
             const target = event.target as HTMLInputElement;
 
-            if (target.value === 'enter') {
-                navigate('/movies');
+            if (target.value === "") {
+                navigate(location.pathname);
             } else {
-                navigate(`/movies?search=${target.value}`);
+                navigate(`${location.pathname}?search=${target.value}`);
             }
         }
     };

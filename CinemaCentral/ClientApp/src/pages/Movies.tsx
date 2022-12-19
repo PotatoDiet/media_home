@@ -11,11 +11,16 @@ type Movie = {
 
 export default function Movies() {
   const navigate = useNavigate();
+  const { search } = useLocation();
 
-  const { isLoading, error, data } = useQuery("moviesData", async () => {
-    const response = await ccFetch(`/api/Movies${window.location.search}`, "GET", navigate);
+  const { isLoading, data, refetch } = useQuery("moviesData", async () => {
+    const response = await ccFetch(`/api/Movies${search}`, "GET", navigate);
     return await response.json();
   });
+  
+  useEffect(() => {
+    refetch();
+  }, [search])
 
   if (isLoading) return <>Loading...</>;
 
