@@ -22,17 +22,15 @@ export default function Home() {
     if (isLoading) return <>Loading...</>;
     
     return (
-        <div>
-            <span className="videos">
-                {data.map((v: Media) => (
-                    <MediaTile
-                        key={v.id}
-                        id={v.id}
-                        type={v.mediaType}
-                        poster={v.posterPath}
-                    />
-                ))}
-            </span>
-        </div>
+        <span className="videos">
+            {data.map((v: Media) => (
+                <MediaTile
+                    key={v.id}
+                    id={v.id}
+                    type={v.mediaType}
+                    poster={v.posterPath}
+                />
+            ))}
+        </span>
     );
 };
