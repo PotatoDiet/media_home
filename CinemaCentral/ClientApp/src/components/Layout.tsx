@@ -12,10 +12,8 @@ function SidebarEntry(props: any) {
     const onPage = location.pathname === props.to;
     
     return (
-        <li>
-            <Link {...props}
-                  className={`flex items-center py-2 px-5 text-base font-normal text-slate-900 rounded-lg hover:bg-slate-200 ${onPage && "bg-slate-200"}`} />
-        </li>
+        <Link {...props}
+              className={`flex items-center py-2 px-5 text-base font-normal text-slate-900 hover:bg-slate-200 ${onPage && "bg-slate-200"}`} />
     );
 }
 
@@ -63,21 +61,31 @@ function Sidebar() {
     };
     
     return (
-        <ul className="basis-72 flex-none">
-            <SidebarEntry to="/">Home</SidebarEntry>
-            <SidebarEntry to="/movies">Movies</SidebarEntry>
-            <SidebarEntry to="/tv">TV</SidebarEntry>
-            <SidebarEntry to="#" onClick={() => logout()}>Logout</SidebarEntry>
+        <div className="basis-72 flex-none divide-y">
+            <div>
+                <div className="py-2 px-5 text-center text-sm font-bold text-slate-900">Libraries</div>
+                <SidebarEntry to="/">All</SidebarEntry>
+                <SidebarEntry to="/movies">Movies</SidebarEntry>
+                <SidebarEntry to="/tv">TV</SidebarEntry>
+            </div>
 
             {isAdmin &&
-                <>
+                <div>
+                    <div className="py-2 px-5 text-center text-sm font-bold text-slate-900">Admin</div>
                     <SidebarEntry to="/admin/users">Users</SidebarEntry>
                     <SidebarEntry to="/admin/libraries">Libraries</SidebarEntry>
-                </>
+                </div>
             }
 
-            <input type="search" placeholder="Search" onKeyUp={onSearch} defaultValue={search} />
-        </ul>
+            <div>
+                <div className="py-2 px-5 text-center text-sm font-bold text-slate-900">Profile</div>
+                <SidebarEntry to="#" onClick={() => logout()}>Logout</SidebarEntry>
+            </div>
+
+            <div>
+                <input className="h-10 py-2 w-full px-5" type="search" placeholder="Search" onKeyUp={onSearch} defaultValue={search} />
+            </div>
+        </div>
     );
 }
 
