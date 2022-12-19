@@ -18,16 +18,16 @@ public class MediaController
     
     [HttpGet]
     [Authorize]
-    public async Task<List<Media>> All()
+    public async Task<List<Media>> All([FromQuery] string? search)
     {
-        var movies = from movie in await _appDbContext.Movies.ToListAsync()
+        var movies = from movie in await _appDbContext.Movies.Where(m => EF.Functions.Like(m.Title, $"%{search}%")).ToListAsync()
             select new Media()
             {
                 Id = movie.Id,
                 PosterPath = movie.PosterPath ?? "",
                 MediaType = MediaType.Movie
             };
-        var series = from tv in await _appDbContext.Series.ToListAsync()
+        var series = from tv in await _appDbContext.Series.Where(s => EF.Functions.Like(s.Title, $"%{search}%")).ToListAsync()
             select new Media()
             {
                 Id = tv.Id,

@@ -26,8 +26,6 @@ public partial class MoviesController : Controller
     [Authorize]
     public async Task<IEnumerable<Movie>> Movies([FromQuery] string? search)
     {
-        var headers = HttpContext.Request.Headers;
-        var token = await HttpContext.AuthenticateAsync();
         return await _appDbContext.Movies.Where(m => EF.Functions.Like(m.Title, $"%{search}%")).ToListAsync();
     }
 

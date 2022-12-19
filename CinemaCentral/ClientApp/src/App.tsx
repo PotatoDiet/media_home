@@ -11,10 +11,13 @@ import AdminUsers from "./pages/AdminUsers";
 import {NewUser} from "./pages/NewUser";
 import AdminLibraries from "./pages/AdminLibraries";
 import Layout from "./components/Layout";
+import TV from "./pages/TV";
 
 export default function App() {
     return (
         <Routes>
+            <Route path="/login" element={<Login />} />
+            
             <Route path="/" element={<Layout />}>
                 <Route index element={<Home/>}/>
                 
@@ -23,10 +26,10 @@ export default function App() {
                 <Route path="/admin/libraries" element={<AdminLibraries />}/>
         
                 <Route path="movies" element={<Movies/>}/>
+                <Route path="tv" element={<TV/>}/>
                 <Route path="movie/:id" element={<Movie/>}/>
                 <Route path="series/:id" element={<Series />}/>
                 <Route path="episode/:id" element={<Episode />}/>
-                <Route path="/login" element={<Login />} />
             </Route>
         </Routes>
     )

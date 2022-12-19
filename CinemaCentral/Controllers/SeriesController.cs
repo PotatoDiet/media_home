@@ -24,9 +24,9 @@ public partial class SeriesController
     
     [HttpGet]
     [Authorize]
-    public async Task<List<Series>> All()
+    public async Task<List<Series>> All([FromQuery] string? search)
     {
-        return await _appDbContext.Series.ToListAsync();
+        return await _appDbContext.Series.Where(s => EF.Functions.Like(s.Title, $"%{search}%")).ToListAsync();
     }
 
     [HttpPost("Update")]
