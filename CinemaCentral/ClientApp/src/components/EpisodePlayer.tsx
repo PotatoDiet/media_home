@@ -11,6 +11,7 @@ export default function EpisodePlayer({id}: VideoPlayerProps) {
         <video
             width="1024"
             controls
+            autoPlay
         >
             <source src={`/api/Series/GetEpisodeStream/${id}`}/>
             Can not play this video

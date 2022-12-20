@@ -1,6 +1,8 @@
 using System.Text;
 using System.Text.Json.Serialization;
+using CinemaCentral.ClientApp.Services;
 using CinemaCentral.Models;
+using CinemaCentral.Providers;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
@@ -50,6 +52,10 @@ builder.Services
             }
         };
     });
+
+builder.Services.AddSingleton<HttpClient, HttpClient>();
+builder.Services.AddSingleton<ImageService, ImageService>();
+builder.Services.AddSingleton<TmdbProvider, TmdbProvider>();
 
 var app = builder.Build();
 

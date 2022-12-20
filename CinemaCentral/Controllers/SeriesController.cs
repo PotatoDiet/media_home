@@ -15,11 +15,12 @@ namespace CinemaCentral.Controllers;
 public partial class SeriesController
 {
     private readonly AppDbContext _appDbContext;
-    private readonly TmdbProvider _tmdbProvider = new();
+    private readonly TmdbProvider _tmdbProvider;
 
-    public SeriesController(AppDbContext appDbContext)
+    public SeriesController(AppDbContext appDbContext, TmdbProvider tmdbProvider)
     {
         _appDbContext = appDbContext;
+        _tmdbProvider = tmdbProvider;
     }
     
     [HttpGet]

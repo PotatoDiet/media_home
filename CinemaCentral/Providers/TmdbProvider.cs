@@ -1,12 +1,18 @@
+using CinemaCentral.ClientApp.Services;
 using CinemaCentral.Models;
 using TMDbLib.Client;
 
 namespace CinemaCentral.Providers;
 
-public class TmdbProvider
+public class TmdbProvider : ITmdbProvider
 {
     private readonly TMDbClient _client = new("5ef572428a688eddbb5e68049f7fedd8");
-    private readonly HttpClient _httpClient = new();
+    private readonly ImageService _imageService;
+
+    public TmdbProvider(ImageService imageService)
+    {
+        _imageService = imageService;
+    }
 
     public async Task<Movie?> FindMovie(string title, uint year)
     {
@@ -24,7 +30,7 @@ public class TmdbProvider
             Title = result.Title,
             Year = year,
             CommunityRating = Convert.ToSingle(result.VoteAverage),
-            PosterPath = await DownloadPoster(result.PosterPath),
+            PosterPath = await DownloadPoster(result.PosterPath, 200, 300),
             Genres = (from genre in movie.Genres
                 select new Genre { Name = genre.Name }).ToList()
         };
@@ -32,6 +38,8 @@ public class TmdbProvider
 
     public async Task<Series?> FindSeries(string title)
     {
+        Thread.Sleep(1000);
+        
         var results = await _client.SearchTvShowAsync(title);
         var result = results?.Results.FirstOrDefault();
         if (result is null)
@@ -44,7 +52,7 @@ public class TmdbProvider
             Title = series.Name,
             Overview = series.Overview,
             CommunityRating = Convert.ToSingle(series.VoteAverage),
-            PosterPath = await DownloadPoster(series.PosterPath),
+            PosterPath = await DownloadPoster(series.PosterPath, 200, 300),
             TmdbId = series.Id
         };
     }
@@ -60,20 +68,19 @@ public class TmdbProvider
         return new Episode()
         {
             Title = result.Name,
-            PosterPath = await DownloadPoster(result.StillPath),
+            PosterPath = await DownloadPoster(result.StillPath, 320, 180),
             SeasonNumber = result.SeasonNumber,
             EpisodeNumber = result.EpisodeNumber
         };
     }
 
-    private async Task<string> DownloadPoster(string remoteRelativePath)
+    private async Task<string> DownloadPoster(string remoteRelativePath, int width, int height)
     {
         var path = Path.Join("assets", "posters", remoteRelativePath);
+        var destination = Path.Join("./wwwroot", path);
         var remotePath = Path.Join("https://image.tmdb.org/t/p/original", remoteRelativePath);
-
-        var response = await _httpClient.GetStreamAsync(remotePath);
-        await using var fs = new FileStream(Path.Join("./wwwroot", path), FileMode.Create);
-        await response.CopyToAsync(fs);
+        
+        await _imageService.Resize(remotePath, destination, width, height);
 
         return Path.Join("/", path);
     }

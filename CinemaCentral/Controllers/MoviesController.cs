@@ -1,6 +1,5 @@
 using CinemaCentral.Models;
 using CinemaCentral.Providers;
-using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.StaticFiles;
@@ -15,11 +14,12 @@ namespace CinemaCentral.Controllers;
 public partial class MoviesController : Controller
 {
     private readonly AppDbContext _appDbContext;
-    private readonly TmdbProvider _tmdbProvider = new();
+    private readonly TmdbProvider _tmdbProvider;
 
-    public MoviesController(AppDbContext appDbContext)
+    public MoviesController(AppDbContext appDbContext, TmdbProvider tmdbProvider)
     {
         _appDbContext = appDbContext;
+        _tmdbProvider = tmdbProvider;
     }
 
     [HttpGet]

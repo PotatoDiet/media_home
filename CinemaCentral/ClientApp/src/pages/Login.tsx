@@ -25,18 +25,20 @@ export default function Login() {
     }
     
     return (
-        <form onSubmit={(e) => handleSubmit(e)}>
-            <label>
-                Username
-                <input type="text" onChange={(e) => setUsername(e.target.value)}></input>
-            </label>
-
-            <label>
-                Password
-                <input type="text" onChange={(e) => setPassword(e.target.value)}></input>
-            </label>
-            
-            <input type="submit" value="Login"></input>
-        </form>
+        <div className="container mx-auto px-2 py-4">
+            <form onSubmit={(e) => handleSubmit(e)}>
+                <label>
+                    Username
+                    <input type="text" onChange={(e) => setUsername(e.target.value)}></input>
+                </label>
+    
+                <label>
+                    Password
+                    <input type="text" onChange={(e) => setPassword(e.target.value)}></input>
+                </label>
+                
+                <input type="submit" value="Login"></input>
+            </form>
+        </div>
     )
 }

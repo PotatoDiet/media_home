@@ -31,7 +31,7 @@ export default function TV() {
                 <MediaTile
                     key={s.id}
                     id={s.id}
-                    type={s.mediaType}
+                    type="Series"
                     poster={s.posterPath}
                 />
             ))}
