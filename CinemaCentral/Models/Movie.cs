@@ -11,12 +11,14 @@ public class Movie
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
     public Guid Id { get; set; }
 
-    [Required] public string Title { get; set; }
+    public required string Title { get; set; }
 
     public uint? Year { get; set; }
     public string? Location { get; set; }
-    public List<Genre> Genres { get; set; }
+    public required List<Genre> Genres { get; set; }
     public float CommunityRating { get; set; }
-    public string? PosterPath { get; set; }
+    public required string PosterPath { get; set; }
     public uint CurrentWatchTimestamp { get; set; }
+    public required string Path { get; set; }
+    public List<WatchtimeStamp> WatchtimeStamps { get; set; } = new();
 }

@@ -12,8 +12,7 @@ export default function VideoPlayer({id, watchtime}: VideoPlayerProps) {
 
     useEffect(() => {
         const listener = setInterval(() => {
-            // @ts-ignore
-            const currWatchtime = Math.floor(ref.current.currentTime ?? 0);
+            const currWatchtime = Math.floor(ref.current?.currentTime ?? 0);
             fetch(`/api/Movies/${id}/UpdateWatchTimestamp`, {
                 method: "POST",
                 body: JSON.stringify(currWatchtime),
@@ -26,15 +25,16 @@ export default function VideoPlayer({id, watchtime}: VideoPlayerProps) {
         return () => {
             clearInterval(listener);
         };
-    });
+    }, []);
 
     return (
         <video
             width="1024"
             controls
             onLoadStart={() => {
-                // @ts-ignore
-                ref.current.currentTime = watchtime;
+                if (ref.current) {
+                    ref.current.currentTime = watchtime;
+                }
             }}
             ref={ref}
             autoPlay

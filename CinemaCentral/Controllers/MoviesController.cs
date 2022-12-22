@@ -57,15 +57,36 @@ public partial class MoviesController : Controller
         };
     }
 
+    [HttpGet("{id:Guid}/GetWatchtimeStamp")]
+    [Authorize]
+    public async Task<IActionResult> GetWatchtimeStamp([FromRoute] Guid id)
+    {
+        var user = await Models.User.GetCurrent(_appDbContext, User);
+        var watchtime = await _appDbContext
+            .WatchtimeStamps
+            .Include(w => w.Movie)
+            .Include(w => w.User)
+            .FirstOrDefaultAsync(w => w.Movie!.Id == id && w.User!.Id == user!.Id);
+        return Ok(watchtime?.Time ?? 0);
+    }
+
     [HttpPost("{id:Guid}/UpdateWatchTimestamp")]
     [Authorize]
     public async Task UpdateWatchTimestamp([FromRoute] Guid id, [FromBody] uint timestamp)
     {
-        var movie = await _appDbContext.Movies.FindAsync(id);
-        if (movie?.Location is null)
-            return;
+        var user = await Models.User.GetCurrent(_appDbContext, User);
+        var watchtime = await _appDbContext
+            .WatchtimeStamps
+            .Include(w => w.Movie)
+            .FirstOrDefaultAsync(w => w.Movie!.Id == id && w.User == user);
+        watchtime ??= new WatchtimeStamp()
+        {
+            User = user!,
+            Movie = await _appDbContext.Movies.FindAsync(id)
+        };
+        _appDbContext.Update(watchtime);
 
-        movie.CurrentWatchTimestamp = timestamp;
+        watchtime.Time = timestamp;
         await _appDbContext.SaveChangesAsync();
     }
 
@@ -94,20 +115,26 @@ public partial class MoviesController : Controller
             
             var movie = await _tmdbProvider.FindMovie(title, year);
             if (movie is null)
+            {
                 continue;
+            }
 
             var genres = new List<Genre>();
             foreach (var genre in movie.Genres)
             {
-                var savedGenre = await _appDbContext.Genres.FindAsync(genre.Name) ?? genre;
+                var savedGenre = await _appDbContext.Genres.FindAsync(genre) ?? new Genre() { Name = genre };
                 genres.Add(savedGenre);
             }
 
-            movie.Genres = genres;
-
-            movie.Location = file;
-
-            _appDbContext.Add(movie);
+            _appDbContext.Add(new Movie()
+            {
+                Title = movie.Title,
+                Year = year,
+                Genres = genres,
+                CommunityRating = (float)movie.Rating,
+                PosterPath = movie.PosterPath,
+                Path = file
+            });
             await _appDbContext.SaveChangesAsync();
         }
     }

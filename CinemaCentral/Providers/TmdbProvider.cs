@@ -1,5 +1,4 @@
 using CinemaCentral.ClientApp.Services;
-using CinemaCentral.Models;
 using TMDbLib.Client;
 
 namespace CinemaCentral.Providers;
@@ -14,7 +13,7 @@ public class TmdbProvider : ITmdbProvider
         _imageService = imageService;
     }
 
-    public async Task<Movie?> FindMovie(string title, uint year)
+    public async Task<ProviderResult?> FindMovie(string title, uint year)
     {
         Thread.Sleep(1000);
         
@@ -25,18 +24,18 @@ public class TmdbProvider : ITmdbProvider
 
         var movie = await _client.GetMovieAsync(result.Id);
 
-        return new Movie
+        return new ProviderResult()
         {
             Title = result.Title,
-            Year = year,
-            CommunityRating = Convert.ToSingle(result.VoteAverage),
+            Overview = result.Overview,
+            Rating = Convert.ToSingle(result.VoteAverage),
             PosterPath = await DownloadPoster(result.PosterPath, 200, 300),
-            Genres = (from genre in movie.Genres
-                select new Genre { Name = genre.Name }).ToList()
+            ProviderId = result.Id,
+            Genres = movie.Genres.Select(g => g.Name).ToHashSet()
         };
     }
 
-    public async Task<Series?> FindSeries(string title)
+    public async Task<ProviderResult?> FindSeries(string title)
     {
         Thread.Sleep(1000);
         
@@ -47,30 +46,33 @@ public class TmdbProvider : ITmdbProvider
 
         var series = await _client.GetTvShowAsync(result.Id);
 
-        return new Series()
+        return new ProviderResult()
         {
             Title = series.Name,
             Overview = series.Overview,
-            CommunityRating = Convert.ToSingle(series.VoteAverage),
+            Rating = Convert.ToSingle(series.VoteAverage),
+            Genres = series.Genres.Select(g => g.Name).ToHashSet(),
             PosterPath = await DownloadPoster(series.PosterPath, 200, 300),
-            TmdbId = series.Id
+            ProviderId = series.Id
         };
     }
     
-    public async Task<Episode?> FindEpisode(int seriesId, int season, int episode)
+    public async Task<ProviderResult?> FindEpisode(int seriesId, int season, int episode)
     {
         Thread.Sleep(1000);
         
         var result = await _client.GetTvEpisodeAsync(seriesId, season, episode);
         if (result is null)
             return null;
-
-        return new Episode()
+        
+        return new ProviderResult()
         {
             Title = result.Name,
+            Overview = result.Overview,
+            Rating = result.VoteAverage,
+            Genres = new HashSet<string>(),
+            ProviderId = result.Id ?? -1,
             PosterPath = await DownloadPoster(result.StillPath, 320, 180),
-            SeasonNumber = result.SeasonNumber,
-            EpisodeNumber = result.EpisodeNumber
         };
     }
 
@@ -84,4 +86,14 @@ public class TmdbProvider : ITmdbProvider
 
         return Path.Join("/", path);
     }
+}
+
+public record ProviderResult
+{
+    public required string Title { get; init; }
+    public required string Overview { get; init; }
+    public double Rating { get; init; }
+    public HashSet<string> Genres { get; init; } = new();
+    public int ProviderId { get; init; }
+    public required string PosterPath { get; init; }
 }

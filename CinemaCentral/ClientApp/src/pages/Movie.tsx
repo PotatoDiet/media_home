@@ -19,18 +19,21 @@ const Video = () => {
 
   useEffect(() => {
     const grabData = async () => {
-      const res = await ccFetch(`/api/Movies/${params.id}`, "GET", navigate);
+      const [res, watchtime] = await Promise.all([
+          ccFetch(`/api/Movies/${params.id}`, "GET", navigate),
+          ccFetch(`/api/Movies/${params.id}/GetWatchtimeStamp`, "GET", navigate)
+      ]);
       const data = await res.json();
 
       setTitle(data.title);
       setGenres(data.genres?.map((genre: Genre) => genre.name).join(', '));
       setCommunityRating(data.communityRating);
       setYear(data.year);
-      setCurrentWatchTimestamp(data.currentWatchTimestamp);
+      setCurrentWatchTimestamp(await watchtime.json());
     };
     
     grabData();
-  });
+  }, []);
 
   if (title === '' || params.id === undefined) {
     return <></>;

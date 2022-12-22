@@ -13,10 +13,10 @@ public class Series
     
     public int TmdbId { get; set; }
     
-    public string Title { get; set; }
-    public string Overview { get; set; }
-    public List<Genre> Genres { get; set; }
-    public string? PosterPath { get; set; }
+    public required string Title { get; set; }
+    public required string Overview { get; set; }
+    public required List<Genre> Genres { get; set; }
+    public required string PosterPath { get; set; }
     public float CommunityRating { get; set; }
-    public List<Episode> Episodes { get; set; }
+    public required List<Episode> Episodes { get; set; }
 }
