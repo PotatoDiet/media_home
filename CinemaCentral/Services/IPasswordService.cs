@@ -1,4 +1,4 @@
-namespace CinemaCentral.ClientApp.Services;
+namespace CinemaCentral.Services;
 
 public interface IPasswordService
 {

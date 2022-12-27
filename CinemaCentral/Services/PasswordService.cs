@@ -1,7 +1,7 @@
 using System.Security.Cryptography;
 using Konscious.Security.Cryptography;
 
-namespace CinemaCentral.ClientApp.Services;
+namespace CinemaCentral.Services;
 
 public class PasswordService : IPasswordService
 {

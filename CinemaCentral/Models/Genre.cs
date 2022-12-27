@@ -8,4 +8,5 @@ public class Genre
     public required string Name { get; set; }
 
     public List<Movie> Movies { get; set; } = new();
+    public List<Series> Series { get; set; } = new();
 }

@@ -93,7 +93,11 @@ public partial class MoviesController : Controller
     [Authorize]
     public async Task Update()
     {
-        _appDbContext.Movies.RemoveRange(_appDbContext.Movies);
+        _appDbContext.Movies.RemoveRange(
+            _appDbContext
+                .Movies
+                .Include(m => m.Genres)
+                .Include(m => m.WatchtimeStamps));
         await _appDbContext.SaveChangesAsync();
 
         var matcher = new Matcher();

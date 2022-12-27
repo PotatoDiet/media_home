@@ -33,9 +33,19 @@ public partial class SeriesController : Controller
     [Authorize]
     public async Task Update()
     {
-        _appDbContext.Series.RemoveRange(_appDbContext.Series);
-        _appDbContext.Seasons.RemoveRange(_appDbContext.Seasons);
-        _appDbContext.Episodes.RemoveRange(_appDbContext.Episodes);
+        _appDbContext.Series.RemoveRange(
+            _appDbContext
+                .Series
+                .Include(s => s.Genres)
+                .Include(s => s.Seasons));
+        _appDbContext.Seasons.RemoveRange(
+            _appDbContext
+                .Seasons
+                .Include(s => s.Episodes));
+        _appDbContext.Episodes.RemoveRange(
+            _appDbContext
+                .Episodes
+                .Include(e => e.WatchtimeStamps));
         await _appDbContext.SaveChangesAsync();
 
         var matcher = new Matcher();

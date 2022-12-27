@@ -1,4 +1,4 @@
-using CinemaCentral.ClientApp.Services;
+using CinemaCentral.Services;
 using TMDbLib.Client;
 
 namespace CinemaCentral.Providers;
@@ -7,10 +7,12 @@ public class TmdbProvider : ITmdbProvider
 {
     private readonly TMDbClient _client = new("5ef572428a688eddbb5e68049f7fedd8");
     private readonly ImageService _imageService;
+    private readonly IStorageService _storageService;
 
-    public TmdbProvider(ImageService imageService)
+    public TmdbProvider(ImageService imageService, IStorageService storageService)
     {
         _imageService = imageService;
+        _storageService = storageService;
     }
 
     public async Task<ProviderResult?> FindMovie(string title, uint year)
@@ -91,13 +93,13 @@ public class TmdbProvider : ITmdbProvider
 
     private async Task<string> DownloadPoster(string remoteRelativePath, int width, int height)
     {
-        var path = Path.Join("assets", "posters", remoteRelativePath);
-        var destination = Path.Join("./wwwroot", path);
         var remotePath = Path.Join("https://image.tmdb.org/t/p/original", remoteRelativePath);
+        var extension = Path.GetExtension(remotePath);
+        using var destination = new MemoryStream();
         
         await _imageService.Resize(remotePath, destination, width, height);
-
-        return Path.Join("/", path);
+        destination.Seek(0, SeekOrigin.Begin);
+        return await _storageService.StoreObject(destination, extension);
     }
 }
 

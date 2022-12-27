@@ -1,6 +1,6 @@
 using ImageMagick;
 
-namespace CinemaCentral.ClientApp.Services;
+namespace CinemaCentral.Services;
 
 public class ImageService : IImageService
 {
@@ -11,7 +11,7 @@ public class ImageService : IImageService
         _httpClient = httpClient;
     }
     
-    public async Task Resize(string uri, string destination, int width, int height)
+    public async Task Resize(string uri, Stream destination, int width, int height)
     {
         var stream = await _httpClient.GetStreamAsync(uri);
         using var image = new MagickImage(stream);
@@ -22,8 +22,6 @@ public class ImageService : IImageService
         };
         image.Resize(size);
         
-        if (File.Exists(destination))
-            File.Delete(destination);
         await image.WriteAsync(destination);
     }
 }

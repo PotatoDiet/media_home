@@ -1,5 +1,5 @@
 using System.Text;
-using CinemaCentral.ClientApp.Services;
+using CinemaCentral.Services;
 using Microsoft.EntityFrameworkCore;
 
 namespace CinemaCentral.Models;

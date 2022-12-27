@@ -22,9 +22,5 @@
         <PackageReference Include="TMDbLib" Version="1.9.2" />
         <PackageReference Include="TorrentTitleParser" Version="1.0.3" />
     </ItemGroup>
-
-    <ItemGroup>
-      <Folder Include="Libraries\Series" />
-      <Folder Include="wwwroot\assets\posters" />
-    </ItemGroup>
+    
 </Project>
