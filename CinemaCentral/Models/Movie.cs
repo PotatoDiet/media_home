@@ -14,11 +14,10 @@ public class Movie
     public required string Title { get; set; }
 
     public uint? Year { get; set; }
-    public string? Location { get; set; }
+    public required string Location { get; set; }
     public required List<Genre> Genres { get; set; }
-    public float CommunityRating { get; set; }
+    public required float CommunityRating { get; set; }
     public required string PosterPath { get; set; }
-    public uint CurrentWatchTimestamp { get; set; }
     public required string Path { get; set; }
     public List<WatchtimeStamp> WatchtimeStamps { get; set; } = new();
 }

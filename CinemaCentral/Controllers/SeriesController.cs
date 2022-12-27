@@ -33,8 +33,10 @@ public partial class SeriesController : Controller
     [Authorize]
     public async Task Update()
     {
-        await _appDbContext.Database.ExecuteSqlRawAsync("DELETE FROM Series");
-        await _appDbContext.Database.ExecuteSqlRawAsync("DELETE FROM Episodes");
+        _appDbContext.Series.RemoveRange(_appDbContext.Series);
+        _appDbContext.Seasons.RemoveRange(_appDbContext.Seasons);
+        _appDbContext.Episodes.RemoveRange(_appDbContext.Episodes);
+        await _appDbContext.SaveChangesAsync();
 
         var matcher = new Matcher();
         matcher.AddInclude("**/*.mp4");
@@ -48,43 +50,26 @@ public partial class SeriesController : Controller
             var title = parsedFilename.Title;
             var season = parsedFilename.Season;
             var episode = parsedFilename.Episode;
-            if (title is null)
-            {
-                continue;
-            }
+            if (title is null) continue;
 
-            var series = await _appDbContext.Series.Include(s => s.Episodes).Where(e => e.Title == title).FirstOrDefaultAsync();
-            if (series is null)
-            {
-                var seriesResult = await _tmdbProvider.FindSeries(title);
-                if (seriesResult is null)
-                    continue;
-                series = new Series()
-                {
-                    Title = seriesResult.Title,
-                    Overview = seriesResult.Overview,
-                    CommunityRating = (float)seriesResult.Rating,
-                    Episodes = new List<Episode>(),
-                    Genres = new List<Genre>(),
-                    PosterPath = seriesResult.PosterPath,
-                    TmdbId = seriesResult.ProviderId
-                };
-                series.Episodes = new List<Episode>();
-                
-                _appDbContext.Series.Add(series);
-            }
+            var series = await FindOrCreateSeries(title);
+            if (series is null) continue;
 
-            var episodeModel =
-                await _tmdbProvider.FindEpisode(series.TmdbId, season, episode);
+            var seasonModel = await FindOrCreateSeason(series, season);
+            if (seasonModel is null) continue;
+
+            var episodeModel = await _tmdbProvider.FindEpisode(series.TmdbId, season, episode);
             if (episodeModel is null)
                 continue;
             
-            series.Episodes.Add(new Episode()
+            seasonModel.Episodes.Add(new Episode()
             {
                 Title = episodeModel.Title,
                 PosterPath = episodeModel.PosterPath,
                 Series = series,
-                SeasonNumber = season,
+                Season = seasonModel,
+                EpisodeNumber = episode,
+                Location = file,
                 Path = file
             });
             await _appDbContext.SaveChangesAsync();
@@ -95,9 +80,23 @@ public partial class SeriesController : Controller
     [Authorize]
     public async Task<Series?> GetSeries([FromRoute] Guid id)
     {
-        var series = await _appDbContext.Series.Include(s => s.Episodes).FirstOrDefaultAsync(s => s.Id == id);
-        series?.Episodes?.ForEach(e => e.Series = null);
+        var series = await _appDbContext.Series.Include(s => s.Seasons).FirstOrDefaultAsync(s => s.Id == id);
+        series?.Seasons?.ForEach(s => s.Series = null);
         return series;
+    }
+
+    [HttpGet("GetSeason/{id:Guid}")]
+    [Authorize]
+    public async Task<IActionResult> GetSeason([FromRoute] Guid id)
+    {
+        var season = await _appDbContext
+            .Seasons
+            .Include(s => s.Episodes)
+            .FirstOrDefaultAsync(s => s.Id == id);
+        if (season is null) return NotFound();
+        season.Episodes.ForEach(e => e.Season = null);
+        
+        return Ok(season);
     }
 
     [HttpGet("GetEpisode/{id:Guid}")]
@@ -112,18 +111,14 @@ public partial class SeriesController : Controller
     public async Task<FileStreamResult?> GetEpisodeStream([FromRoute] Guid id)
     {
         var episode = await _appDbContext.Episodes.FindAsync(id);
-        if (episode?.Location is null)
-            return null;
+        if (episode?.Location is null) return null;
 
         new FileExtensionContentTypeProvider()
             .TryGetContentType(episode.Location, out var contentType);
         contentType ??= "application/octet-stream";
 
         var fs = System.IO.File.OpenRead(episode.Location);
-        return new FileStreamResult(fs, contentType)
-        {
-            EnableRangeProcessing = true
-        };
+        return new FileStreamResult(fs, contentType) { EnableRangeProcessing = true };
     }
     
     [HttpGet("GetWatchtimeStamp/{id:Guid}")]
@@ -157,5 +152,61 @@ public partial class SeriesController : Controller
 
         watchtime.Time = timestamp;
         await _appDbContext.SaveChangesAsync();
+    }
+
+    private async Task<Series?> FindOrCreateSeries(string title)
+    {
+        var series = await _appDbContext.Series.FirstOrDefaultAsync(s => s.Title == title);
+        if (series is not null) return series;
+        
+        var result = await _tmdbProvider.FindSeries(title);
+        if (result is null) return null;
+
+        var genres = new List<Genre>();
+        foreach (var name in result.Genres)
+        {
+            genres.Add(await FindOrCreateGenre(name));
+        }
+
+        series = new Series()
+        {
+            Title = result.Title,
+            CommunityRating = (float)result.Rating,
+            Genres = genres,
+            Overview = result.Overview,
+            PosterPath = result.PosterPath,
+            TmdbId = result.ProviderId
+        };
+        _appDbContext.Add(series);
+        await _appDbContext.SaveChangesAsync();
+
+        return series;
+    }
+
+    private async Task<Season?> FindOrCreateSeason(Series series, int seasonNumber)
+    {
+        var season = await _appDbContext
+                   .Seasons
+                   .FirstOrDefaultAsync(s => s.Series == series && s.Number == seasonNumber);
+        if (season is not null) return season;
+        
+        var result = await _tmdbProvider.FindSeason(series.TmdbId, seasonNumber);
+        if (result is null) return null;
+
+        season = new Season()
+        {
+            Number = seasonNumber,
+            PosterPath = result.PosterPath,
+            Series = series
+        };
+        _appDbContext.Seasons.Add(season);
+        await _appDbContext.SaveChangesAsync();
+
+        return season;
+    }
+
+    private async Task<Genre> FindOrCreateGenre(string name)
+    {
+        return await _appDbContext.Genres.FindAsync(name) ?? new Genre() { Name = name };
     }
 }

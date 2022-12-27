@@ -9,13 +9,12 @@ public class Episode
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
     public Guid Id { get; set; }
 
-    public string? Location { get; set; }
+    public required string Location { get; set; }
     public required string Title { get; set; }
     public required string PosterPath { get; set; }
-    public uint CurrentWatchTimestamp { get; set; }
     public required Series Series { get; set; }
-    public int SeasonNumber { get; set; }
-    public int EpisodeNumber { get; set; }
+    public required Season Season { get; set; }
+    public required int EpisodeNumber { get; set; }
     public required string Path { get; set; }
     public List<WatchtimeStamp> WatchtimeStamps { get; set; } = new();
 }

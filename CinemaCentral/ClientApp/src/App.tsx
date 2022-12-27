@@ -12,6 +12,7 @@ import {NewUser} from "./pages/NewUser";
 import AdminLibraries from "./pages/AdminLibraries";
 import Layout from "./components/Layout";
 import TV from "./pages/TV";
+import Season from "./pages/Season";
 
 export default function App() {
     return (
@@ -29,6 +30,7 @@ export default function App() {
                 <Route path="tv" element={<TV/>}/>
                 <Route path="movie/:id" element={<Movie/>}/>
                 <Route path="series/:id" element={<Series />}/>
+                <Route path="season/:id" element={<Season />}/>
                 <Route path="episode/:id" element={<Episode />}/>
             </Route>
         </Routes>

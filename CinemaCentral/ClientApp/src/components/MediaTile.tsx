@@ -14,6 +14,8 @@ export default function MediaTile({ poster, id, type }: MediaTileProps) {
     path = `/movie/${id}`;
   } else if (type === "Series") {
     path = `/series/${id}`;
+  } else if (type === "Season") {
+    path = `/season/${id}`;
   }
 
   return (

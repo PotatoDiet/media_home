@@ -7,7 +7,7 @@ export default function AdminLibraries() {
     
     async function update() {
         await Promise.all([
-            ccFetch("/api/Movies/Update", "POST", navigate),
+            //ccFetch("/api/Movies/Update", "POST", navigate),
             ccFetch("/api/Series/Update", "POST", navigate)
         ]);
     }

@@ -56,6 +56,19 @@ public class TmdbProvider : ITmdbProvider
             ProviderId = series.Id
         };
     }
+
+    public async Task<ProviderResult?> FindSeason(int seriesId, int season)
+    {
+        var result = await _client.GetTvSeasonAsync(seriesId, season);
+        if (result is null) return null;
+
+        return new ProviderResult()
+        {
+            Title = result.Name,
+            Overview = result.Overview,
+            PosterPath = await DownloadPoster(result.PosterPath, 200, 300)
+        };
+    }
     
     public async Task<ProviderResult?> FindEpisode(int seriesId, int season, int episode)
     {

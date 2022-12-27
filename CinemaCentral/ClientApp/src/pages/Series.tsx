@@ -1,69 +1,49 @@
-import {useNavigate, useParams} from "react-router-dom";
+import {useLocation, useNavigate, useParams} from "react-router-dom";
 import React, {useEffect, useState} from "react";
 import EpisodeTile from "../components/EpisodeTile";
 import {ccFetch} from "../utitilies";
+import {useQuery} from "react-query";
+import Season from "./Season";
+import MediaTile from "../components/MediaTile";
 
-type Season = {
-    seasonNumber: number;
-    episodes: Episode[];
+type Series = {
+    id: string;
+    seasons: SeasonT[];
 }
 
-type Episode = {
+type SeasonT = {
     id: string;
+    number: number;
     posterPath: string;
-    title: string;
-    seasonNumber: number;
-    episodeNumber: number;
 }
 
 export default function Series() {
-    const params = useParams();
+    const { id } = useParams();
     const navigate = useNavigate();
     
-    let [seasons, setSeasons] = useState([] as Season[]);
+    const [series, setSeries] = useState<Series | undefined>(undefined);
 
-    useEffect( () => {
-        async function grabVideos() {
-            const res = await ccFetch(`/api/Series/GetSeries/${params.id}`, "GET", navigate);
-            const data = await res.json();
-            
-            const seasonsDict: { [key: number]: Episode[] } = {};
-            data["episodes"].forEach((episode: Episode) => {
-                if (episode.seasonNumber in seasonsDict) {
-                    seasonsDict[episode.seasonNumber].push(episode);
-                } else {
-                    seasonsDict[episode.seasonNumber] = [episode];
-                }
-            });
-            
-            const seasonsArr: Season[] = [];
-            for (const [key, value] of Object.entries(seasonsDict)) {
-                value.sort((a, b) => a.episodeNumber - b.episodeNumber);
-                seasonsArr.push({ seasonNumber: parseInt(key), episodes: value });
-            }
-            seasonsArr.sort((a, b) => a.seasonNumber - b.seasonNumber);
-            setSeasons(seasonsArr);
+    useQuery("getSeries", {
+        queryFn: () => {
+            return ccFetch(`/api/Series/GetSeries/${id}`, "GET", navigate);
+        },
+        onSuccess: async (data: Response) => {
+            const tmpSeries = await data.json() as Series;
+            tmpSeries.seasons.sort((a, b) => a.number - b.number);
+            setSeries(tmpSeries);
         }
-        grabVideos();
-    }, [window.location.search]);
+    });
     
     return (
-        <>
-            {seasons.map((s: Season) => (
-                <div className="flex flex-wrap mb-10" key={s.seasonNumber}>
-                    <h2 className="w-full m-3 text-2xl">Season {s.seasonNumber}</h2>
-
-                    {s.episodes.map((e: Episode) => (
-                        <EpisodeTile
-                            key={e.id}
-                            id={e.id}
-                            poster={e.posterPath}
-                            title={e.title}
-                            episodeNumber={e.episodeNumber}
-                        />
-                    ))}
-                </div>
+        <div className="flex flex-wrap">
+            {series?.seasons.map((s: SeasonT) => (
+                <MediaTile
+                    key={s.id}
+                    id={s.id}
+                    type="Season"
+                    poster={s.posterPath}
+                />
             ))}
-        </>
+        </div>
     );
 }

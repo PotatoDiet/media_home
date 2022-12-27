@@ -43,8 +43,7 @@ public partial class MoviesController : Controller
     public async Task<FileStreamResult?> Stream([FromRoute] Guid id)
     {
         var movie = await _appDbContext.Movies.FindAsync(id);
-        if (movie?.Location is null)
-            return null;
+        if (movie?.Location is null) return null;
 
         new FileExtensionContentTypeProvider()
             .TryGetContentType(movie.Location, out var contentType);
@@ -94,8 +93,8 @@ public partial class MoviesController : Controller
     [Authorize]
     public async Task Update()
     {
-        await _appDbContext.Database.ExecuteSqlRawAsync("DELETE FROM Movies");
-        await _appDbContext.Database.ExecuteSqlRawAsync("DELETE FROM Genres");
+        _appDbContext.Movies.RemoveRange(_appDbContext.Movies);
+        await _appDbContext.SaveChangesAsync();
 
         var matcher = new Matcher();
         matcher.AddInclude("**/*.mp4");
@@ -108,22 +107,15 @@ public partial class MoviesController : Controller
             var parsedFilename = new Torrent(Path.GetFileName(file));
             var title = parsedFilename.Title;
             var year = Convert.ToUInt32(parsedFilename.Year);
-            if (title is null)
-            {
-                continue;
-            }
+            if (title is null) continue;
             
             var movie = await _tmdbProvider.FindMovie(title, year);
-            if (movie is null)
-            {
-                continue;
-            }
+            if (movie is null) continue;
 
             var genres = new List<Genre>();
-            foreach (var genre in movie.Genres)
+            foreach (var name in movie.Genres)
             {
-                var savedGenre = await _appDbContext.Genres.FindAsync(genre) ?? new Genre() { Name = genre };
-                genres.Add(savedGenre);
+                genres.Add(await FindOrCreateGenre(name));
             }
 
             _appDbContext.Add(new Movie()
@@ -133,9 +125,15 @@ public partial class MoviesController : Controller
                 Genres = genres,
                 CommunityRating = (float)movie.Rating,
                 PosterPath = movie.PosterPath,
+                Location = file,
                 Path = file
             });
             await _appDbContext.SaveChangesAsync();
         }
+    }
+    
+    private async Task<Genre> FindOrCreateGenre(string name)
+    {
+        return await _appDbContext.Genres.FindAsync(name) ?? new Genre() { Name = name };
     }
 }

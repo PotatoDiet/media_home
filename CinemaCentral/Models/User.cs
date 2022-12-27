@@ -20,7 +20,7 @@ public class User
     public required string Name { get; set; }
     public required byte[] PasswordHash { get; set; }
     public required byte[] PasswordSalt { get; set; }
-    public UserRole Role { get; set; }
+    public required UserRole Role { get; set; }
 
     public static async Task<User?> GetCurrent(AppDbContext appDbContext, ClaimsPrincipal claims)
     {

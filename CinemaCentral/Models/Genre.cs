@@ -6,6 +6,6 @@ public class Genre
 {
     [Key]
     public required string Name { get; set; }
-    
-    public List<Movie> Movies { get; set; }
+
+    public List<Movie> Movies { get; set; } = new();
 }
