@@ -56,6 +56,7 @@ builder.Services.AddSingleton<HttpClient, HttpClient>();
 builder.Services.AddSingleton<ImageService, ImageService>();
 builder.Services.AddSingleton<TmdbProvider, TmdbProvider>();
 builder.Services.AddSingleton<IStorageService, StorageService>();
+builder.Services.AddScoped<LibraryService, LibraryService>();
 
 var app = builder.Build();
 

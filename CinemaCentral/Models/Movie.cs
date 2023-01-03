@@ -20,4 +20,5 @@ public class Movie
     public required string PosterPath { get; set; }
     public required string Path { get; set; }
     public List<WatchtimeStamp> WatchtimeStamps { get; set; } = new();
+    public required Library Library { get; set; }
 }

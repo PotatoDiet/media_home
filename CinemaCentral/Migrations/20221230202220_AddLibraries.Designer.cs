@@ -3,6 +3,7 @@ using System;
 using CinemaCentral.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CinemaCentral.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20221230202220_AddLibraries")]
+    partial class AddLibraries
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "6.0.7");
@@ -229,8 +231,8 @@ namespace CinemaCentral.Migrations
                         {
                             Id = new Guid("f807c6f7-3825-43c4-b48e-db0eb5928b58"),
                             Name = "user",
-                            PasswordHash = new byte[] { 193, 108, 34, 212, 246, 137, 253, 1, 201, 177, 143, 159, 215, 52, 190, 79, 246, 175, 52, 99, 4, 80, 135, 190, 118, 8, 133, 202, 181, 254, 123, 125, 174, 74, 206, 167, 32, 154, 150, 140, 209, 200, 5, 198, 33, 206, 249, 24, 10, 81, 163, 248, 200, 117, 89, 212, 81, 245, 200, 234, 220, 163, 132, 84, 168, 187, 43, 96, 217, 208, 177, 87, 91, 69, 74, 71, 169, 130, 159, 79, 35, 239, 243, 31, 94, 186, 113, 191, 250, 79, 210, 213, 237, 151, 245, 50, 185, 175, 190, 11, 198, 154, 165, 174, 152, 14, 231, 144, 127, 141, 149, 165, 4, 235, 155, 161, 162, 52, 3, 56, 140, 234, 77, 111, 71, 12, 30, 251 },
-                            PasswordSalt = new byte[] { 92, 86, 0, 136, 107, 55, 2, 234, 139, 169, 227, 91, 85, 96, 185, 113, 146, 176, 237, 180, 125, 8, 179, 124, 12, 93, 82, 243, 141, 116, 211, 77 },
+                            PasswordHash = new byte[] { 88, 85, 101, 95, 121, 50, 77, 113, 92, 188, 68, 155, 68, 67, 43, 152, 161, 136, 159, 11, 96, 217, 5, 207, 2, 114, 97, 177, 189, 82, 0, 249, 78, 248, 147, 181, 4, 2, 229, 27, 246, 124, 63, 41, 94, 120, 95, 106, 208, 196, 219, 30, 246, 214, 128, 212, 211, 51, 116, 77, 183, 58, 204, 255, 47, 81, 27, 235, 172, 160, 137, 210, 60, 77, 183, 247, 61, 38, 41, 107, 2, 237, 181, 85, 52, 84, 200, 228, 73, 218, 99, 21, 244, 122, 105, 26, 243, 90, 60, 73, 236, 138, 15, 147, 16, 98, 142, 249, 158, 206, 194, 44, 57, 13, 77, 45, 132, 193, 51, 238, 189, 214, 129, 93, 111, 114, 131, 188 },
+                            PasswordSalt = new byte[] { 253, 218, 66, 196, 236, 158, 9, 13, 147, 227, 15, 26, 193, 176, 198, 61, 82, 167, 198, 117, 182, 198, 11, 45, 135, 204, 242, 229, 52, 51, 219, 140 },
                             Role = 0
                         });
                 });

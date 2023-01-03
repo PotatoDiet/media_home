@@ -4,7 +4,12 @@ import {useQuery} from "react-query";
 import {ccFetch} from "../utitilies";
 
 type User = {
-    role: "Normal" | "Admin"
+    role: "Normal" | "Admin";
+}
+
+type Library = {
+    name: string;
+    id: string;
 }
 
 function SidebarEntry(props: any) {
@@ -22,6 +27,7 @@ function Sidebar() {
     const location = useLocation();
     const [search, setSearch] = useState("");
     const [isAdmin, setIsAdmin] = useState(false);
+    const [libraries, setLibraries] = useState([] as Library[])
 
     useEffect(() => {
         const searchQuery = new URLSearchParams(location.search).get("search");
@@ -39,6 +45,15 @@ function Sidebar() {
             }
         }
     });
+    
+    useQuery("listLibraries", {
+        queryFn: () => {
+            return ccFetch("/api/Library/ListLibraries", "GET", navigate);
+        },
+        onSuccess: async (data: Response) => {
+            setLibraries(await data.json());
+        }
+    })
 
     const logout = useCallback(async () => {
         await fetch("/api/User/Logout", {
@@ -69,8 +84,10 @@ function Sidebar() {
             <div>
                 <div className="py-2 px-5 text-center text-sm font-bold text-slate-900">Libraries</div>
                 <SidebarEntry to="/">All</SidebarEntry>
-                <SidebarEntry to="/movies">Movies</SidebarEntry>
-                <SidebarEntry to="/tv">TV</SidebarEntry>
+
+                {libraries.map(library => (
+                    <SidebarEntry to={`/libraries/${library.id}`}>{library.name}</SidebarEntry>
+                ))}
             </div>
 
             {isAdmin &&

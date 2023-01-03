@@ -15,7 +15,7 @@ export default function Home() {
     const { search } = useLocation();
     
     const { isLoading, data, refetch } = useQuery("mediaData", async () => {
-        const response = await ccFetch(`/api/Media${search}`, "GET", navigate);
+        const response = await ccFetch(`/api/Library/ListMedia${search}`, "GET", navigate);
         return await response.json();
     });
 

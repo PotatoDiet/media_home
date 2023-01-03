@@ -19,20 +19,20 @@ export default function AdminUsers() {
         },
         onSuccess: async (data: Response) => {
             setUsers(await data.json() as User[]);
-        },
-        onError: (e) => {
-            console.error(e);
         }
     });
 
     function onCreateUser() {
-        console.log("hello");
         navigate("/admin/users/new");
     }
 
     return (
         <>
-            <button onClick={() => onCreateUser()}>New User</button>
+            <button onClick={() => onCreateUser()}
+                    className="p-3 mb-3 border rounded-md hover:bg-slate-200">
+                New User
+            </button>
+            
             <table className="table-auto border border-slate-400 text-left w-full">
                 <thead>
                 <tr className="border">

@@ -6,13 +6,14 @@ export default function AdminLibraries() {
     const navigate = useNavigate();
     
     async function update() {
-        await Promise.all([
-            ccFetch("/api/Movies/Update", "POST", navigate),
-            ccFetch("/api/Series/Update", "POST", navigate)
-        ]);
+        await ccFetch("/api/Library/Update", "POST", navigate)
     }
     
     return (
-        <button type="button" onClick={update}>Update</button>
+        <button type="button"
+                onClick={update}
+                className="p-3 mb-3 border rounded-md hover:bg-slate-200">
+            Update
+        </button>
     )
 }

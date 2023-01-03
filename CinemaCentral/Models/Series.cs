@@ -20,4 +20,5 @@ public class Series
     public required string PosterPath { get; set; }
     public float CommunityRating { get; set; }
     public List<Season> Seasons { get; set; } = new();
+    public required Library Library { get; set; }
 }
