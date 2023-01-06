@@ -20,6 +20,48 @@ public class LibraryController
     }
 
     [Authorize]
+    [HttpPost]
+    public async Task<IActionResult> NewLibrary([FromBody] LibraryStruct body)
+    {
+        _appDbContext.Libraries.Add(
+            new Library()
+            {
+                Name = body.Name,
+                Root = body.Root
+            }
+        );
+        await _appDbContext.SaveChangesAsync();
+        return new OkResult();
+    }
+
+    [Authorize(Roles = "Admin")]
+    [HttpPost("{id:Guid}")]
+    public async Task<IActionResult> UpdateLibrary([FromRoute] Guid id, [FromBody] LibraryStruct body)
+    {
+        var library = await _appDbContext.Libraries.FindAsync(id);
+        if (library is null) return new NotFoundResult();
+
+        library.Name = body.Name;
+        library.Root = body.Root;
+        await _appDbContext.SaveChangesAsync();
+        return new OkResult();
+    }
+
+    [Authorize(Roles = "Admin")]
+    [HttpDelete("{id:Guid}")]
+    public async Task<IActionResult> DeleteLibrary([FromRoute] Guid id)
+    {
+        var library = await _appDbContext
+            .Libraries
+            .FindAsync(id);
+        if (library is null) return new NotFoundResult();
+
+        _appDbContext.Libraries.Remove(library);
+        await _appDbContext.SaveChangesAsync();
+        return new OkResult();
+    }
+
+    [Authorize]
     [HttpGet("ListLibraries")]
     public async Task<IActionResult> ListLibraries()
     {
@@ -128,6 +170,8 @@ public class LibraryController
         return new OkResult();
     }
 }
+
+public readonly record struct LibraryStruct(string Name, string Root);
 
 public readonly record struct Media(Guid Id, string PosterPath, MediaType MediaType);
 

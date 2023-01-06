@@ -12,6 +12,7 @@ import AdminLibraries from "./pages/AdminLibraries";
 import Layout from "./components/Layout";
 import Season from "./pages/Season";
 import Library from "./pages/Library";
+import NewLibrary from "./pages/NewLibrary";
 
 export default function App() {
     return (
@@ -24,6 +25,7 @@ export default function App() {
                 <Route path="/admin/users" element={<AdminUsers />}/>
                 <Route path="/admin/users/new" element={<NewUser />}/>
                 <Route path="/admin/libraries" element={<AdminLibraries />}/>
+                <Route path="/admin/libraries/new" element={<NewLibrary />}/>
         
                 <Route path="libraries/:id" element={<Library/>}/>
                 <Route path="movie/:id" element={<Movie/>}/>

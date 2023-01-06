@@ -64,7 +64,6 @@ function UserRow({ user }: { user: User }) {
                     "Content-Type": "application/json"
                 },
                 body: JSON.stringify({
-                    id: user.id,
                     name: username,
                     role: role
                 })

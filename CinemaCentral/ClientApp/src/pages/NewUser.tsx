@@ -10,7 +10,6 @@ export function NewUser() {
 
     const saveMutation = useMutation("newUser", {
         mutationFn: () => {
-            console.log(role);
             return fetch(`/api/User/Create`, {
                 method: "POST",
                 headers: {
@@ -52,5 +51,5 @@ export function NewUser() {
     
             <input type="submit" value="Create"></input>
         </form>
-    )
+    );
 }
