@@ -78,6 +78,10 @@ function Sidebar() {
     return (
         <div className="basis-72 flex-none divide-y border-x h-screen">
             <div>
+                <h1 className="py-2 px-5 text-center text-slate-900">CinemaCentral</h1>
+            </div>
+            
+            <div>
                 <input className="h-10 py-2 w-full px-5" type="search" placeholder="Search" onKeyUp={onSearch} onChange={(e) => setSearch(e.target.value)} value={search} />
             </div>
             
